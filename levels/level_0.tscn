@@ -1,0 +1,27 @@
+[gd_scene format=4 uid="uid://jpl7v642vyuu"]
+
+[ext_resource type="TileSet" uid="uid://8caent6sdiiw" path="res://resources/maze_tile_set.tres" id="1_823pn"]
+[ext_resource type="Texture2D" uid="uid://glti0m8xgc0v" path="res://textures/cells.png" id="1_iss0w"]
+[ext_resource type="Script" uid="uid://cloq8scl3f845" path="res://scripts/level.gd" id="2_iss0w"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yi3jx"]
+texture = ExtResource("1_iss0w")
+texture_region_size = Vector2i(32, 32)
+4:0/0 = 0
+4:0/0/modulate = Color(0.5, 1, 0.5, 0.24705882)
+
+[sub_resource type="TileSet" id="TileSet_foxie"]
+tile_size = Vector2i(32, 32)
+sources/1 = SubResource("TileSetAtlasSource_yi3jx")
+
+[node name="Level" type="Node2D" unique_id=973170473]
+
+[node name="BuildAreaLayer" type="TileMapLayer" parent="." unique_id=1283605932]
+tile_set = SubResource("TileSet_foxie")
+
+[node name="LevelLayer" type="TileMapLayer" parent="." unique_id=1886682121]
+texture_filter = 1
+tile_map_data = PackedByteArray("AAABAAQAAAACAAIAAAAAAAAAAAACAAAAAAAAAAEAAAACAAAAAAAAAAIAAAACAAAAAAAAAAMAAAACAAAAAAAAAAQAAAACAAAAAAAAAAUAAAACAAAAAAABAAUAAAACAAAAAAACAAUAAAACAAAAAAACAAQAAAACAAAAAAACAAMAAAACAAAAAAACAAIAAAACAAAAAAACAAEAAAACAAAAAAACAAAAAAACAAAAAAACAP//AAACAAAAAAACAP7/AAACAAAAAAAAAP7/AAACAAAAAAAAAP3/AAACAAAAAAAAAPz/AAACAAAAAAACAP3/AAACAAAAAAACAPz/AAACAAAAAAACAPv/AAACAAAAAAACAPr/AAACAAAAAAABAPr/AAACAAAAAAAAAPr/AAACAAAAAAAAAP//AAACAAAAAAAAAPv/AAACAAAAAAABAPv/AAABAAIAAAA=")
+tile_set = ExtResource("1_823pn")
+rendering_quadrant_size = 32
+script = ExtResource("2_iss0w")

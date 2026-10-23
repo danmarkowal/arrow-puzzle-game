@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://get3fmac1tiw"]
+
+[ext_resource type="Script" uid="uid://oqxosy5qnrah" path="res://scripts/level_select.gd" id="1_p0wlc"]
+[ext_resource type="Texture2D" uid="uid://glti0m8xgc0v" path="res://textures/cells.png" id="2_2epne"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gcspg"]
+atlas = ExtResource("2_2epne")
+region = Rect2(32, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dg77c"]
+atlas = ExtResource("2_2epne")
+region = Rect2(64, 128, 32, 32)
+
+[node name="LevelSelect" type="HBoxContainer" unique_id=1959256031]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 40.0
+grow_vertical = 0
+script = ExtResource("1_p0wlc")
+
+[node name="PreviousLevel" type="TextureButton" parent="." unique_id=660571083]
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_gcspg")
+
+[node name="NextLevel" type="TextureButton" parent="." unique_id=481644388]
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_dg77c")
+
+[connection signal="pressed" from="PreviousLevel" to="." method="_on_previous_level_pressed"]
+[connection signal="pressed" from="NextLevel" to="." method="_on_next_level_pressed"]

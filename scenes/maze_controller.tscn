@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://cx4flba2t76wr"]
+
+[ext_resource type="Script" uid="uid://biusobsai88wl" path="res://scripts/maze_controller.gd" id="1_q8g6s"]
+[ext_resource type="Texture2D" uid="uid://glti0m8xgc0v" path="res://textures/cells.png" id="2_q8g6s"]
+[ext_resource type="TileSet" uid="uid://8caent6sdiiw" path="res://resources/maze_tile_set.tres" id="3_yohnu"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q28i6"]
+texture = ExtResource("2_q8g6s")
+texture_region_size = Vector2i(32, 32)
+4:0/0 = 0
+4:0/0/modulate = Color(0.5, 1, 0.5, 0.24705882)
+
+[sub_resource type="TileSet" id="TileSet_njmk0"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_q28i6")
+
+[node name="MazeController" type="Node2D" unique_id=1744428019]
+script = ExtResource("1_q8g6s")
+
+[node name="BuildAreaLayer" type="TileMapLayer" parent="." unique_id=1654705046]
+tile_set = SubResource("TileSet_njmk0")
+
+[node name="ObstacleLayer" type="TileMapLayer" parent="." unique_id=1720063179]
+texture_filter = 1
+tile_set = ExtResource("3_yohnu")
+rendering_quadrant_size = 32
+
+[node name="LevelLayer" type="TileMapLayer" parent="." unique_id=424133224]
+texture_filter = 1
+tile_set = ExtResource("3_yohnu")
+rendering_quadrant_size = 32
+
+[node name="UserLayer" type="TileMapLayer" parent="." unique_id=285707901]
+texture_filter = 1
+tile_set = ExtResource("3_yohnu")
+rendering_quadrant_size = 32
+
+[node name="ArrowLayer" type="TileMapLayer" parent="." unique_id=440632675]
+texture_filter = 1
+tile_set = ExtResource("3_yohnu")
+rendering_quadrant_size = 32
+
+[node name="StepTimer" type="Timer" parent="." unique_id=102375159]
+wait_time = 0.2
+
+[connection signal="timeout" from="StepTimer" to="." method="_on_step_timer_timeout"]

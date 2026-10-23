@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://cfl1ioyy1s5hm"]
+
+[ext_resource type="Script" uid="uid://bhlye7bi8jsek" path="res://scripts/toolbox.gd" id="1_ys8or"]
+[ext_resource type="Texture2D" uid="uid://glti0m8xgc0v" path="res://textures/cells.png" id="2_77ski"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h2yge"]
+atlas = ExtResource("2_77ski")
+region = Rect2(32, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lquwl"]
+atlas = ExtResource("2_77ski")
+region = Rect2(0, 96, 32, 32)
+
+[node name="Toolbox" type="VBoxContainer" unique_id=2075612306]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+script = ExtResource("1_ys8or")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=558992250]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureButton" type="TextureButton" parent="Panel" unique_id=2129758945]
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_h2yge")
+
+[node name="Panel2" type="PanelContainer" parent="." unique_id=310891038]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureButton" type="TextureButton" parent="Panel2" unique_id=2081449096]
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_lquwl")
+
+[connection signal="pressed" from="Panel/TextureButton" to="." method="_on_texture_button_pressed"]
+[connection signal="pressed" from="Panel2/TextureButton" to="." method="_on_texture_button_pressed2"]

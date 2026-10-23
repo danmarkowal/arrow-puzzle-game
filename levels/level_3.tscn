@@ -1,0 +1,28 @@
+[gd_scene format=4 uid="uid://ck3i56picnh7a"]
+
+[ext_resource type="TileSet" uid="uid://8caent6sdiiw" path="res://resources/maze_tile_set.tres" id="1_3hls8"]
+[ext_resource type="Texture2D" uid="uid://glti0m8xgc0v" path="res://textures/cells.png" id="1_gew73"]
+[ext_resource type="Script" uid="uid://cloq8scl3f845" path="res://scripts/level.gd" id="2_hbghi"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bmgug"]
+texture = ExtResource("1_gew73")
+texture_region_size = Vector2i(32, 32)
+4:0/0 = 0
+4:0/0/modulate = Color(0.5, 1, 0.5, 0.24705882)
+
+[sub_resource type="TileSet" id="TileSet_20opy"]
+tile_size = Vector2i(32, 32)
+sources/1 = SubResource("TileSetAtlasSource_bmgug")
+
+[node name="Level" type="Node2D" unique_id=743590558]
+
+[node name="BuildAreaLayer" type="TileMapLayer" parent="." unique_id=526076150]
+tile_map_data = PackedByteArray("AAABAAMAAQAEAAAAAAABAAIAAQAEAAAAAAABAAEAAQAEAAAAAAABAAAAAQAEAAAAAAABAP//AQAEAAAAAAABAP7/AQAEAAAAAAABAP3/AQAEAAAAAAABAPz/AQAEAAAAAAABAPv/AQAEAAAAAAAAAP//AQAEAAAAAAAAAPv/AQAEAAAAAAD///v/AQAEAAAAAAD///z/AQAEAAAAAAD///3/AQAEAAAAAAD///7/AQAEAAAAAAABAAQAAQAEAAAAAAD/////AQAEAAAAAAA=")
+tile_set = SubResource("TileSet_20opy")
+
+[node name="LevelLayer" type="TileMapLayer" parent="." unique_id=1886682121]
+texture_filter = 1
+tile_map_data = PackedByteArray("AAAAAAAAAAACAAAAAAAAAAEAAAACAAAAAAAAAAIAAAACAAAAAAAAAAMAAAACAAAAAAAAAAQAAAACAAAAAAAAAAUAAAACAAAAAAABAAUAAAACAAAAAAACAAUAAAACAAAAAAACAAQAAAACAAAAAAACAAMAAAACAAAAAAACAAIAAAACAAAAAAACAAEAAAACAAAAAAACAAAAAAACAAAAAAD+/wAAAAACAAAAAAACAP//AAACAAAAAAACAP7/AAACAAAAAAAAAP7/AAACAAAAAAAAAP3/AAACAAAAAAAAAPz/AAACAAAAAAACAP3/AAACAAAAAAACAPz/AAACAAAAAAACAPv/AAACAAAAAAACAPr/AAACAAAAAAABAPr/AAACAAAAAAAAAPr/AAACAAAAAAD///r/AAACAAAAAAD+//r/AAACAAAAAAD+//3/AAACAAAAAAD+//z/AAACAAAAAAD+//v/AAACAAAAAAD+//7/AAACAAAAAAD+/wEAAAACAAAAAAD+/wIAAAACAAAAAAD+/wMAAAACAAAAAAD+/wQAAAACAAAAAAD+/wUAAAACAAAAAAD//wUAAAACAAAAAAD//wQAAAABAAIAAAD/////AAABAAAAAAD+////AAACAAAAAAABAAQAAAACAAIAAAA=")
+tile_set = ExtResource("1_3hls8")
+rendering_quadrant_size = 32
+script = ExtResource("2_hbghi")

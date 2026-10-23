@@ -1,0 +1,36 @@
+[gd_resource type="TileSet" format=3 uid="uid://8caent6sdiiw"]
+
+[ext_resource type="Texture2D" uid="uid://glti0m8xgc0v" path="res://textures/cells.png" id="1_r7sif"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0xm2m"]
+texture = ExtResource("1_r7sif")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+1:0/0/modulate = Color(0.8, 0.8, 0.8, 1)
+2:0/next_alternative_id = 3
+2:0/0 = 0
+2:0/0/modulate = Color(0.75, 0.75, 0.75, 1)
+0:1/0 = 0
+1:1/0 = 0
+1:1/0/modulate = Color(0.5, 0.83333325, 1, 1)
+2:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+1:2/0/modulate = Color(0.5, 1, 0.6, 1)
+2:2/0 = 0
+2:2/0/modulate = Color(0.8333333, 1, 0.5, 1)
+0:3/0 = 0
+0:3/0/modulate = Color(1, 0.875, 0.5, 1)
+1:3/0 = 0
+1:3/0/modulate = Color(1, 0.25, 0.2624998, 1)
+2:3/0 = 0
+2:3/0/modulate = Color(0.8, 0.8, 0.8, 1)
+0:4/0 = 0
+0:4/0/modulate = Color(1, 0.5, 0.5, 1)
+
+[resource]
+tile_size = Vector2i(32, 32)
+custom_data_layer_0/name = "tag"
+custom_data_layer_0/type = 2
+sources/0 = SubResource("TileSetAtlasSource_0xm2m")
