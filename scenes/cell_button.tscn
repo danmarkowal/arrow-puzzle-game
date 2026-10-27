@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://bvwsyink0b6hq"]
+
+[ext_resource type="Script" uid="uid://uu5bp2o0qq23" path="res://scripts/cell_button.gd" id="2_tcxm5"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_pj3q8"]
+load_path = "res://.godot/imported/cells.png-5063d6a1bcf2391560f5420d654cbf33.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w6taw"]
+atlas = SubResource("CompressedTexture2D_pj3q8")
+region = Rect2(0, 0, 32, 32)
+
+[node name="CellButton" type="Button" unique_id=1770184773]
+icon = SubResource("AtlasTexture_w6taw")
+script = ExtResource("2_tcxm5")
+
+[node name="CountLabel" type="RichTextLabel" parent="." unique_id=192759511]
+layout_mode = 0
+offset_top = 31.0
+offset_right = 43.0
+offset_bottom = 47.0
+text = "x1"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 2
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]

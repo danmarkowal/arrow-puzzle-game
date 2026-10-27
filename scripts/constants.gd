@@ -17,6 +17,8 @@ const DEATH = Vector2i(1, 3)
 const BUILD_AREA = Vector2i(4, 0)
 const DESTROYER = Vector2i(0, 4)
 
+const CELL_SIZE = 32
+
 
 # Cardinal directions
 const NORTH = 0

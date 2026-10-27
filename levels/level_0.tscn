@@ -15,6 +15,7 @@ tile_size = Vector2i(32, 32)
 sources/1 = SubResource("TileSetAtlasSource_yi3jx")
 
 [node name="Level" type="Node2D" unique_id=973170473]
+script = ExtResource("2_iss0w")
 
 [node name="BuildAreaLayer" type="TileMapLayer" parent="." unique_id=1283605932]
 tile_set = SubResource("TileSet_foxie")

@@ -24,35 +24,23 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_8o75f")
 
-[node name="PanelContainer" type="PanelContainer" parent="." unique_id=167425238]
+[node name="PlayButton" type="Button" parent="." unique_id=2098423188]
 layout_mode = 2
+icon = SubResource("AtlasTexture_0xm2m")
 
-[node name="PlayButton" type="TextureButton" parent="PanelContainer" unique_id=947373091]
+[node name="PauseButton" type="Button" parent="." unique_id=100066575]
 layout_mode = 2
-texture_normal = SubResource("AtlasTexture_0xm2m")
+icon = SubResource("AtlasTexture_h2yge")
 
-[node name="PanelContainer2" type="PanelContainer" parent="." unique_id=1052741083]
+[node name="RestartButton" type="Button" parent="." unique_id=909831330]
 layout_mode = 2
+icon = SubResource("AtlasTexture_1bvp3")
 
-[node name="PauseButton" type="TextureButton" parent="PanelContainer2" unique_id=185282359]
+[node name="ClearButton" type="Button" parent="." unique_id=485242191]
 layout_mode = 2
-texture_normal = SubResource("AtlasTexture_h2yge")
+icon = SubResource("AtlasTexture_8o75f")
 
-[node name="PanelContainer3" type="PanelContainer" parent="." unique_id=376826318]
-layout_mode = 2
-
-[node name="RestartButton" type="TextureButton" parent="PanelContainer3" unique_id=1954314757]
-layout_mode = 2
-texture_normal = SubResource("AtlasTexture_1bvp3")
-
-[node name="PanelContainer4" type="PanelContainer" parent="." unique_id=1038481941]
-layout_mode = 2
-
-[node name="ClearButton" type="TextureButton" parent="PanelContainer4" unique_id=95413717]
-layout_mode = 2
-texture_normal = SubResource("AtlasTexture_8o75f")
-
-[connection signal="pressed" from="PanelContainer/PlayButton" to="." method="_on_play_button_pressed"]
-[connection signal="pressed" from="PanelContainer2/PauseButton" to="." method="_on_pause_button_pressed"]
-[connection signal="pressed" from="PanelContainer3/RestartButton" to="." method="_on_restart_button_pressed"]
-[connection signal="pressed" from="PanelContainer4/ClearButton" to="." method="_on_clear_button_pressed"]
+[connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="PauseButton" to="." method="_on_pause_button_pressed"]
+[connection signal="pressed" from="RestartButton" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="ClearButton" to="." method="_on_clear_button_pressed"]

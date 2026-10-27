@@ -24,6 +24,10 @@ Constants="*uid://bp5pe5o3nvb61"
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[gui]
+
+theme/custom_font="uid://bk2evfyxxfeym"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
