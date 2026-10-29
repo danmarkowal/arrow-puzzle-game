@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://ck3i56picnh7a" path="res://levels/level_3.tscn" id="5_jbj1t"]
 [ext_resource type="PackedScene" uid="uid://dt2rislccubnt" path="res://levels/level_4.tscn" id="6_muem4"]
 [ext_resource type="PackedScene" uid="uid://btgq58w8jme81" path="res://levels/level_5.tscn" id="7_dp3eg"]
-[ext_resource type="PackedScene" uid="uid://r3r65wriv8vn" path="res://levels/level_6.tscn" id="8_0ld40"]
 [ext_resource type="PackedScene" uid="uid://cfl1ioyy1s5hm" path="res://scenes/toolbox.tscn" id="9_gqmmt"]
 [ext_resource type="PackedScene" uid="uid://dbh3vsqy2on75" path="res://scenes/control_bar.tscn" id="10_yc10j"]
 [ext_resource type="PackedScene" uid="uid://du3ekpjkopor8" path="res://scenes/stats.tscn" id="11_jscy8"]
@@ -16,7 +15,7 @@
 [node name="Node2D" type="Node2D" unique_id=1963476635]
 
 [node name="MazeController" parent="." unique_id=1744428019 node_paths=PackedStringArray("toolbox", "stats", "camera") instance=ExtResource("1_eb6dy")]
-level_scenes = Array[PackedScene]([ExtResource("2_trceg"), ExtResource("3_a8y0u"), ExtResource("4_jkv2x"), ExtResource("5_jbj1t"), ExtResource("6_muem4"), ExtResource("7_dp3eg"), ExtResource("8_0ld40")])
+level_scenes = Array[PackedScene]([ExtResource("2_trceg"), ExtResource("3_a8y0u"), ExtResource("4_jkv2x"), ExtResource("5_jbj1t"), ExtResource("6_muem4"), ExtResource("7_dp3eg")])
 toolbox = NodePath("../CanvasLayer/GUI/Toolbox")
 stats = NodePath("../CanvasLayer/GUI/Stats")
 camera = NodePath("../Camera2D")
@@ -33,7 +32,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-metadata/_edit_group_ = true
 
 [node name="Toolbox" parent="CanvasLayer/GUI" unique_id=2075612306 instance=ExtResource("9_gqmmt")]
 layout_mode = 1
@@ -69,11 +67,33 @@ offset_bottom = 58.0
 
 [node name="LevelSelect" parent="CanvasLayer/GUI" unique_id=1959256031 instance=ExtResource("12_pm3ni")]
 layout_mode = 1
-offset_right = 68.0
+offset_left = 8.0
+offset_top = -48.0
+offset_right = 76.0
+offset_bottom = -8.0
+
+[node name="Instructions" type="RichTextLabel" parent="CanvasLayer/GUI" unique_id=255758993]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -172.0
+offset_top = -135.0
+offset_right = -28.0
+offset_bottom = -55.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_colors/default_color = Color(0.5, 0.5, 0.5, 1)
+text = "- Select a block from the toolbar
+- Left click to place
+- Right click to delete"
+fit_content = true
 
 [connection signal="clear" from="CanvasLayer/GUI/ControlBar" to="MazeController" method="clear"]
 [connection signal="pause" from="CanvasLayer/GUI/ControlBar" to="MazeController" method="pause"]
 [connection signal="play" from="CanvasLayer/GUI/ControlBar" to="MazeController" method="play"]
-[connection signal="restart" from="CanvasLayer/GUI/ControlBar" to="MazeController" method="restart"]
+[connection signal="restart" from="CanvasLayer/GUI/ControlBar" to="MazeController" method="restart" binds= [false]]
 [connection signal="next" from="CanvasLayer/GUI/LevelSelect" to="MazeController" method="next_level"]
 [connection signal="previous" from="CanvasLayer/GUI/LevelSelect" to="MazeController" method="previous_level"]

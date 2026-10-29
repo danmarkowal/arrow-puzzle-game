@@ -26,18 +26,22 @@ script = ExtResource("1_8o75f")
 
 [node name="PlayButton" type="Button" parent="." unique_id=2098423188]
 layout_mode = 2
+tooltip_text = "Play"
 icon = SubResource("AtlasTexture_0xm2m")
 
 [node name="PauseButton" type="Button" parent="." unique_id=100066575]
 layout_mode = 2
+tooltip_text = "Pause"
 icon = SubResource("AtlasTexture_h2yge")
 
 [node name="RestartButton" type="Button" parent="." unique_id=909831330]
 layout_mode = 2
+tooltip_text = "Tooltip"
 icon = SubResource("AtlasTexture_1bvp3")
 
 [node name="ClearButton" type="Button" parent="." unique_id=485242191]
 layout_mode = 2
+tooltip_text = "Clear"
 icon = SubResource("AtlasTexture_8o75f")
 
 [connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]

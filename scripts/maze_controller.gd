@@ -18,12 +18,11 @@ var steps = 0
 func add_user_tiles() -> void:
 	for cell in $UserLayer.get_used_cells():
 		var cell_type: Vector2i = $UserLayer.get_cell_atlas_coords(cell)
-		# if/else instead of match: match patterns need constant expressions,
-		# and Constants.* may be an autoload member.
-		if cell_type == Constants.USER_WALL:
-			$ObstacleLayer.set_cell(cell, 0, cell_type)
-		else:
-			$LevelLayer.set_cell(cell, 0, cell_type)
+		match cell_type:
+			Constants.USER_WALL:
+				$ObstacleLayer.set_cell(cell, 0, cell_type)
+			_:
+				$LevelLayer.set_cell(cell, 0, cell_type)
 
 
 func remove_user_tiles() -> void:
@@ -50,11 +49,11 @@ func pause() -> void:
 	$StepTimer.stop()
 
 
-func restart() -> void:
+func restart(first_load: bool) -> void:
 	if level_scenes.is_empty():
 		push_warning("No level scenes assigned.")
 		return
-	load_level_from_scene(level_scenes[current_level])
+	load_level_from_scene(level_scenes[current_level], first_load)
 	$BuildAreaLayer.visible = true
 
 
@@ -64,6 +63,7 @@ func clear() -> void:
 	pause()
 	$BuildAreaLayer.visible = true
 	$UserLayer.clear()
+	toolbox.reset()
 
 
 func update_level(offset: int) -> void:
@@ -76,7 +76,7 @@ func update_level(offset: int) -> void:
 	current_level += offset
 	$UserLayer.clear()
 	$UserLayer.visible = true
-	restart()
+	restart(true)
 	
 
 func previous_level() -> void:
@@ -140,7 +140,7 @@ var arrows: Array[Arrow] = []
 # Called when the node enters the scene tree for the first time
 func _ready() -> void:
 	$StepTimer.wait_time = step_time
-	restart()
+	restart(true)
 
 
 func is_blocked(cell: Vector2i) -> bool:
@@ -309,22 +309,27 @@ func process_interactions(list: Array[Arrow], is_chain: bool, chain_fired: Dicti
 	return spawn
 
 
-func load_level_from_scene(scene: PackedScene) -> void:
+func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
+	print(first_load)
 	goal_reached = false
 	game_over = false
 	editable = true
 	steps = 0
 	pause()
-
+	
 	arrows.clear()
 	$BuildAreaLayer.clear()
 	$ArrowLayer.clear()
 	$LevelLayer.clear()
 	$ObstacleLayer.clear()
+	
 	var level = scene.instantiate()
 	var build_area = level.get_node("BuildAreaLayer")
 	var level_layer = level.get_node("LevelLayer")
-
+		
+	if first_load:
+		toolbox.init(level.placable_blocks)
+	
 	for cell in build_area.get_used_cells():
 		$BuildAreaLayer.set_cell(cell, 0, Constants.BUILD_AREA)
 
@@ -338,7 +343,7 @@ func load_level_from_scene(scene: PackedScene) -> void:
 		else:
 			$LevelLayer.set_cell(cell, 0, cell_type)
 
-	# The instantiated scene is never added to the tree, so free it manually.
+	# The instantiated scene is never added to the tree, so we free it 
 	level.free()
 
 	redraw_arrows()
@@ -407,19 +412,58 @@ func _on_step_timer_timeout() -> void:
 		pause()
 
 
+# TODO: Add keybinds (Taiyo)
 func _unhandled_input(event: InputEvent) -> void:
 	if not $StepTimer.is_stopped() or not editable:
 		return
 	if event is InputEventMouseButton and event.pressed:
 		var cell = $UserLayer.local_to_map($UserLayer.get_local_mouse_position())
-		if cell not in $BuildAreaLayer.get_used_cells():
+		if not can_place_block(cell):
 			return
-		var layers = [$LevelLayer, $ObstacleLayer, $ArrowLayer]
-		for layer in layers:
-			if layer.get_cell_atlas_coords(cell) != Constants.EMPTY:
-				return
 		match event.button_index:
 			MOUSE_BUTTON_LEFT:
-				$UserLayer.set_cell(cell, 0, toolbox.selected_cell)
+				place_block(cell)
 			MOUSE_BUTTON_RIGHT:
-				$UserLayer.erase_cell(cell)
+				delete_block(cell)
+
+
+func can_place_block(cell: Vector2i):
+	# Player can only place blocks in the buildable area
+	if cell not in $BuildAreaLayer.get_used_cells():
+		return false
+	# Player cannot place blocks in occupied cells
+	var layers = [$LevelLayer, $ObstacleLayer, $ArrowLayer]
+	for layer in layers:
+		if layer.get_cell_atlas_coords(cell) != Constants.EMPTY:
+			return false
+	return true
+
+
+func place_block(cell: Vector2i) -> void:
+	var selected = toolbox.selected_block
+	if selected == null or not toolbox.has_remaining(selected):
+		return
+
+	var atlas_coords = Level.get_block_atlas_coords(selected)
+	var existing_atlas_coords = $UserLayer.get_cell_atlas_coords(cell)
+
+	if existing_atlas_coords != Constants.EMPTY:
+		# Only look up the block once we know the cell isn't empty
+		var existing_block = Level.get_placable_block(existing_atlas_coords)
+		# Do not replace with the same block as useless
+		if existing_block == selected:
+			return
+		# Put back the existing block when replacing it
+		toolbox.change_count(existing_block, 1)
+
+	$UserLayer.set_cell(cell, 0, atlas_coords)
+	toolbox.change_count(selected, -1)
+	
+
+func delete_block(cell: Vector2i):
+	var atlas_coords = $UserLayer.get_cell_atlas_coords(cell)
+	if atlas_coords == Constants.EMPTY:
+		return
+	var placable_block = Level.get_placable_block(atlas_coords)
+	$UserLayer.erase_cell(cell)
+	toolbox.change_count(placable_block, 1)

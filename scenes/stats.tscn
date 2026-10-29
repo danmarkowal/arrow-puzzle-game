@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://lf78t8vpx2x1" path="res://scripts/stats.gd" id="1_3f7q0"]
 
 [node name="Stats" type="VBoxContainer" unique_id=533535130]
-offset_right = 128.0
-offset_bottom = 50.0
+offset_right = 210.0
+offset_bottom = 72.0
 script = ExtResource("1_3f7q0")
 
 [node name="StepCounter" type="RichTextLabel" parent="." unique_id=1577697174]
