@@ -10,6 +10,8 @@ atlas = SubResource("CompressedTexture2D_pj3q8")
 region = Rect2(0, 0, 32, 32)
 
 [node name="CellButton" type="Button" unique_id=1770184773]
+focus_mode = 0
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 icon = SubResource("AtlasTexture_w6taw")
 script = ExtResource("2_tcxm5")
 
@@ -18,7 +20,7 @@ layout_mode = 0
 offset_top = 31.0
 offset_right = 43.0
 offset_bottom = 47.0
-text = "x1"
+text = "x0"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0

@@ -406,10 +406,16 @@ func _on_step_timer_timeout() -> void:
 		game_over = true
 		pause()
 
-
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("PauseToggle"):
+		if $StepTimer.is_stopped():
+			play() 
+		else:
+			pause()
+
 	if not $StepTimer.is_stopped() or not editable:
-		return
+		return		
+
 	if event is InputEventMouseButton and event.pressed:
 		var cell = $UserLayer.local_to_map($UserLayer.get_local_mouse_position())
 		if cell not in $BuildAreaLayer.get_used_cells():

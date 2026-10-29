@@ -9,10 +9,12 @@ script = ExtResource("1_3f7q0")
 
 [node name="StepCounter" type="RichTextLabel" parent="." unique_id=1577697174]
 layout_mode = 2
+focus_mode = 0
 text = "Steps"
 fit_content = true
 
 [node name="ArrowCounter" type="RichTextLabel" parent="." unique_id=1133345803]
 layout_mode = 2
+focus_mode = 0
 text = "Arrows"
 fit_content = true
