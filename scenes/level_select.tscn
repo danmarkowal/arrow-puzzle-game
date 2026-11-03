@@ -22,10 +22,12 @@ script = ExtResource("1_p0wlc")
 
 [node name="PreviousLevel" type="TextureButton" parent="." unique_id=660571083]
 layout_mode = 2
+focus_mode = 0
 texture_normal = SubResource("AtlasTexture_gcspg")
 
 [node name="NextLevel" type="TextureButton" parent="." unique_id=481644388]
 layout_mode = 2
+focus_mode = 0
 texture_normal = SubResource("AtlasTexture_dg77c")
 
 [connection signal="pressed" from="PreviousLevel" to="." method="_on_previous_level_pressed"]

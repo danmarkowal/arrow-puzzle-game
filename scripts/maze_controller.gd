@@ -14,7 +14,6 @@ var game_over = false
 var editable = true
 var steps = 0
 
-
 func add_user_tiles() -> void:
 	for cell in $UserLayer.get_used_cells():
 		var cell_type: Vector2i = $UserLayer.get_cell_atlas_coords(cell)
@@ -170,11 +169,11 @@ var arrow_art_facing: int = Constants.NORTH
 # Tile transform flags that rotate the arrow artwork to point along `facing`
 func facing_to_tile_alternative(facing: int) -> int:
 	var quarter_turns = posmod(facing - arrow_art_facing, 4)
-	if quarter_turns == 1:  # 90 degrees clockwise
+	if quarter_turns == 1: # 90 degrees clockwise
 		return TileSetAtlasSource.TRANSFORM_TRANSPOSE | TileSetAtlasSource.TRANSFORM_FLIP_H
-	elif quarter_turns == 2:  # 180 degrees
+	elif quarter_turns == 2: # 180 degrees
 		return TileSetAtlasSource.TRANSFORM_FLIP_H | TileSetAtlasSource.TRANSFORM_FLIP_V
-	elif quarter_turns == 3:  # 90 degrees counter-clockwise
+	elif quarter_turns == 3: # 90 degrees counter-clockwise
 		return TileSetAtlasSource.TRANSFORM_TRANSPOSE | TileSetAtlasSource.TRANSFORM_FLIP_V
 	return 0
 
@@ -211,7 +210,7 @@ func fight(a: Arrow, b: Arrow) -> void:
 		a.value = diff
 		kill_arrow(b)
 	elif diff < 0:
-		b.value = -diff
+		b.value = - diff
 		kill_arrow(a)
 	else:
 		kill_arrow(a)
@@ -380,6 +379,19 @@ func copy_cell(cell: Vector2i, from: TileMapLayer, to: TileMapLayer) -> void:
 		from.get_cell_atlas_coords(cell),
 		from.get_cell_alternative_tile(cell))
 
+func process_mouse_edit(button: MouseButton) -> void:
+	var cell = $UserLayer.local_to_map($UserLayer.get_local_mouse_position())
+	if cell not in $BuildAreaLayer.get_used_cells():
+		return
+	var layers = [$LevelLayer, $ObstacleLayer, $ArrowLayer]
+	for layer in layers:
+		if layer.get_cell_atlas_coords(cell) != Constants.EMPTY:
+			return
+	match button:
+		MOUSE_BUTTON_LEFT:
+			place_block(cell)
+		MOUSE_BUTTON_RIGHT:
+			delete_block(cell)
 
 func _on_step_timer_timeout() -> void:
 	var moving: Array[Arrow] = []
@@ -432,20 +444,27 @@ func _on_step_timer_timeout() -> void:
 		game_over = true
 		pause()
 
+func _process(delta: float) -> void:
+	if editable:
+		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			process_mouse_edit(MOUSE_BUTTON_LEFT)
+		elif Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+			process_mouse_edit(MOUSE_BUTTON_RIGHT)
 
-# TODO: Add keybinds (Taiyo)
 func _unhandled_input(event: InputEvent) -> void:
-	if not $StepTimer.is_stopped() or not editable:
-		return
-	if event is InputEventMouseButton and event.pressed:
-		var cell = $UserLayer.local_to_map($UserLayer.get_local_mouse_position())
-		if not can_place_block(cell):
-			return
-		match event.button_index:
-			MOUSE_BUTTON_LEFT:
-				place_block(cell)
-			MOUSE_BUTTON_RIGHT:
-				delete_block(cell)
+	if event.is_action_pressed("PauseToggle"):
+		if $StepTimer.is_stopped():
+			play()
+		else:
+			pause()
+	elif event.is_action_pressed("Clear"):
+		clear()
+	elif event.is_action_pressed("Restart"):
+		restart(false)
+	elif event.is_action_pressed("NextLevel"):
+		next_level()
+	elif event.is_action_pressed("PrevLevel"):
+		previous_level()
 
 
 func can_place_block(cell: Vector2i):
