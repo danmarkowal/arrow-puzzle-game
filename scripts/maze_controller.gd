@@ -14,7 +14,6 @@ var game_over = false
 var editable = true
 var steps = 0
 
-
 func add_user_tiles() -> void:
 	for cell in $UserLayer.get_used_cells():
 		var cell_type: Vector2i = $UserLayer.get_cell_atlas_coords(cell)
@@ -354,6 +353,19 @@ func load_level_from_scene(scene: PackedScene) -> void:
 		var center = (top_left + bottom_right) / 2
 		camera.global_position = $ObstacleLayer.to_global(center)
 
+func process_mouse_edit(button: MouseButton) -> void:
+	var cell = $UserLayer.local_to_map($UserLayer.get_local_mouse_position())
+	if cell not in $BuildAreaLayer.get_used_cells():
+		return
+	var layers = [$LevelLayer, $ObstacleLayer, $ArrowLayer]
+	for layer in layers:
+		if layer.get_cell_atlas_coords(cell) != Constants.EMPTY:
+			return
+	match button:
+		MOUSE_BUTTON_LEFT:
+			$UserLayer.set_cell(cell, 0, toolbox.selected_cell)
+		MOUSE_BUTTON_RIGHT:
+			$UserLayer.erase_cell(cell)
 
 func _on_step_timer_timeout() -> void:
 	var moving: Array[Arrow] = []
@@ -406,26 +418,30 @@ func _on_step_timer_timeout() -> void:
 		game_over = true
 		pause()
 
+func _process(delta: float) -> void:
+	if editable:
+		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			process_mouse_edit(MOUSE_BUTTON_LEFT)
+		elif Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+			process_mouse_edit(MOUSE_BUTTON_RIGHT)
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("PauseToggle"):
 		if $StepTimer.is_stopped():
 			play() 
 		else:
 			pause()
+	elif event.is_action_pressed("Clear"):
+		clear()		
+	elif event.is_action_pressed("Restart"):
+		restart()
+	elif event.is_action_pressed("NextLevel"):
+		next_level()
+	elif event.is_action_pressed("PrevLevel"):
+		previous_level()
 
 	if not $StepTimer.is_stopped() or not editable:
 		return		
-
+	
 	if event is InputEventMouseButton and event.pressed:
-		var cell = $UserLayer.local_to_map($UserLayer.get_local_mouse_position())
-		if cell not in $BuildAreaLayer.get_used_cells():
-			return
-		var layers = [$LevelLayer, $ObstacleLayer, $ArrowLayer]
-		for layer in layers:
-			if layer.get_cell_atlas_coords(cell) != Constants.EMPTY:
-				return
-		match event.button_index:
-			MOUSE_BUTTON_LEFT:
-				$UserLayer.set_cell(cell, 0, toolbox.selected_cell)
-			MOUSE_BUTTON_RIGHT:
-				$UserLayer.erase_cell(cell)
+		process_mouse_edit(event.button_index)
