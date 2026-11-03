@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://cfl1ioyy1s5hm"]
 
 [ext_resource type="Script" uid="uid://bhlye7bi8jsek" path="res://scripts/toolbox.gd" id="1_ys8or"]
-[ext_resource type="PackedScene" uid="uid://bvwsyink0b6hq" path="res://scenes/cell_button.tscn" id="2_wrd2d"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ys8or"]
 content_margin_left = 4.0
@@ -13,17 +12,6 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_pj3q8"]
-load_path = "res://.godot/imported/cells.png-5063d6a1bcf2391560f5420d654cbf33.ctex"
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ys8or"]
-atlas = SubResource("CompressedTexture2D_pj3q8")
-region = Rect2(0, 96, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_77ski"]
-atlas = SubResource("CompressedTexture2D_pj3q8")
-region = Rect2(32, 32, 32, 32)
-
 [node name="Toolbox" type="PanelContainer" unique_id=1492118507]
 offset_right = 32.0
 offset_bottom = 68.0
@@ -32,17 +20,3 @@ script = ExtResource("1_ys8or")
 
 [node name="Buttons" type="VBoxContainer" parent="." unique_id=2075612306]
 layout_mode = 2
-
-[node name="CellButton" parent="Buttons" unique_id=1770184773 instance=ExtResource("2_wrd2d")]
-layout_mode = 2
-theme_override_colors/icon_normal_color = Color(1, 0.8745098, 0.5019608, 1)
-icon = SubResource("AtlasTexture_ys8or")
-cell_type = Vector2i(0, 3)
-count = 10
-
-[node name="CellButton2" parent="Buttons" unique_id=365961040 instance=ExtResource("2_wrd2d")]
-layout_mode = 2
-theme_override_colors/icon_normal_color = Color(0.5019608, 0.83137256, 1, 1)
-icon = SubResource("AtlasTexture_77ski")
-cell_type = Vector2i(1, 1)
-count = 1
