@@ -310,7 +310,6 @@ func process_interactions(list: Array[Arrow], is_chain: bool, chain_fired: Dicti
 
 
 func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
-	print(first_load)
 	goal_reached = false
 	game_over = false
 	editable = true
