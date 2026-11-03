@@ -143,8 +143,18 @@ func _ready() -> void:
 	restart(true)
 
 
-func is_blocked(cell: Vector2i) -> bool:
-	return $ObstacleLayer.get_cell_atlas_coords(cell) != Constants.EMPTY
+func is_free(cell: Vector2i, arrow: Arrow) -> bool:
+	var cell_type = $ObstacleLayer.get_cell_atlas_coords(cell)
+	# Assume that the cell alternative id corresponds to its cardinal facing
+	# direction
+	var cell_facing = $ObstacleLayer.get_cell_alternative_tile(cell)
+	match cell_type:
+		Constants.ONE_WAY_WALL:
+			return arrow.facing == cell_facing
+		Constants.EMPTY:
+			return true
+		_:
+			return false
 
 
 func kill_arrow(arrow: Arrow) -> void:
@@ -153,11 +163,11 @@ func kill_arrow(arrow: Arrow) -> void:
 
 
 # Which way the arrow artwork points in the tileset (assumes the
-# cardinals are consecutive clockwise: N, E, S, W).
+# cardinals are consecutive clockwise: N, E, S, W)
 var arrow_art_facing: int = Constants.NORTH
 
 
-# Tile transform flags that rotate the arrow artwork to point along `facing`.
+# Tile transform flags that rotate the arrow artwork to point along `facing`
 func facing_to_tile_alternative(facing: int) -> int:
 	var quarter_turns = posmod(facing - arrow_art_facing, 4)
 	if quarter_turns == 1:  # 90 degrees clockwise
@@ -179,18 +189,18 @@ func redraw_arrows() -> void:
 # Decide facing and destination for this tick. Does not move the arrow yet,
 # so all arrows move simultaneously regardless of processing order
 func plan_move(arrow: Arrow) -> void:
-	if is_blocked(arrow.look(Constants.FORWARD)):
+	if not is_free(arrow.look(Constants.FORWARD), arrow):
 		var open_dirs: Array[int] = []
 		for dir in [Constants.RIGHT, Constants.LEFT]:
-			if not is_blocked(arrow.look(dir)):
+			if is_free(arrow.look(dir), arrow):
 				open_dirs.append(dir)
 		if len(open_dirs) == 1:
 			arrow.face(open_dirs[0])
-		elif not is_blocked(arrow.look(Constants.BACK)):
+		elif is_free(arrow.look(Constants.BACK), arrow):
 			arrow.face(Constants.BACK)
-		# else: completely boxed in, keep facing and stay put.
+		# else: completely boxed in, keep facing and stay put
 	var target = arrow.look(Constants.FORWARD)
-	arrow.next_position = arrow.position if is_blocked(target) else target
+	arrow.next_position = arrow.position if not is_free(target, arrow) else target
 
 
 # Head-on fight: the stronger arrow survives with the absolute difference
@@ -264,12 +274,12 @@ func find_head_on_pair(group: Array) -> Array:
 
 # Removes the splitting arrow and records its children in `spawn`
 # (cell -> Arrow). Children landing on the same tile are combined into one arrow
-# whose value is the sum of theirs. Children inherit the parent's value.
+# whose value is the sum of theirs. Children inherit the parent's value
 func split_arrow(arrow: Arrow, spawn: Dictionary) -> void:
 	var relative_dirs: Array[int] = [Constants.FORWARD, Constants.LEFT, Constants.RIGHT]
 	for relative_dir in relative_dirs:
 		var pos = arrow.look(relative_dir)
-		if is_blocked(pos):
+		if not is_free(pos, arrow):
 			continue
 		var child = Arrow.new(pos, arrow.relative_to_cardinal(relative_dir), arrow.value)
 		if spawn.has(pos):
@@ -286,7 +296,7 @@ func split_arrow(arrow: Arrow, spawn: Dictionary) -> void:
 # `is_chain` marks arrows spawned by a splitter this tick. A splitter may be
 # triggered by chain-spawned arrows only once per tick (tracked in `chain_fired`),
 # which keeps loops of splitters from chaining forever. Arrows that reached a
-# splitter by normal movement always split.
+# splitter by normal movement always split
 func process_interactions(list: Array[Arrow], is_chain: bool, chain_fired: Dictionary, destroyed: Array[Vector2i]) -> Dictionary:
 	var spawn: Dictionary = {}
 	for arrow in list:
@@ -335,12 +345,17 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 	# Move cells from level into different layers
 	for cell in level_layer.get_used_cells():
 		var cell_type = level_layer.get_cell_atlas_coords(cell)
-		if cell_type == Constants.WALL:
-			$ObstacleLayer.set_cell(cell, 0, cell_type)
-		elif cell_type == Constants.START:
-			arrows.push_back(Arrow.new(cell))
-		else:
-			$LevelLayer.set_cell(cell, 0, cell_type)
+		match cell_type:
+			# Obstacles go on the obstacle layer
+			Constants.WALL, Constants.ONE_WAY_WALL:
+				copy_cell(cell, level_layer, $ObstacleLayer)
+			# Add arrows from the start node
+			Constants.START:
+				arrows.push_back(Arrow.new(cell))
+			# Interactables go on the level layer
+			_:
+				copy_cell(cell, level_layer, $LevelLayer)
+
 
 	# The instantiated scene is never added to the tree, so we free it 
 	level.free()
@@ -357,6 +372,13 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 		var bottom_right = $ObstacleLayer.map_to_local(used_rect.end - Vector2i.ONE)
 		var center = (top_left + bottom_right) / 2
 		camera.global_position = $ObstacleLayer.to_global(center)
+		
+
+func copy_cell(cell: Vector2i, from: TileMapLayer, to: TileMapLayer) -> void:
+	to.set_cell(cell,
+		from.get_cell_source_id(cell),
+		from.get_cell_atlas_coords(cell),
+		from.get_cell_alternative_tile(cell))
 
 
 func _on_step_timer_timeout() -> void:
