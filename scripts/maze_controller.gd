@@ -451,9 +451,17 @@ func _process(delta: float) -> void:
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 			process_mouse_edit(MOUSE_BUTTON_LEFT)
 		elif Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
-			process_mouse_edit(MOUSE_BUTTON_RIGHT)
-
+			process_mouse_edit(MOUSE_BUTTON_RIGHT)	
+				
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and not event.echo and editable:
+		var index = 0
+		for button in toolbox.button_group.get_buttons():
+			if event.keycode == KEY_1 + index:
+				button.button_pressed = true
+				button.pressed.emit()
+			index += 1
+				
 	if event.is_action_pressed("PauseToggle"):
 		if $StepTimer.is_stopped():
 			play()
@@ -467,7 +475,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		next_level()
 	elif event.is_action_pressed("PrevLevel"):
 		previous_level()
-
 
 func can_place_block(cell: Vector2i):
 	# Player can only place blocks in the buildable area
