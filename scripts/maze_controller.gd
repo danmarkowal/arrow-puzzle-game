@@ -14,6 +14,7 @@ var game_over = false
 var editable = true
 var steps = 0
 
+
 func add_user_tiles() -> void:
 	for cell in $UserLayer.get_used_cells():
 		var cell_type: Vector2i = $UserLayer.get_cell_atlas_coords(cell)
@@ -142,14 +143,15 @@ func _ready() -> void:
 	restart(true)
 
 
-func is_free(cell: Vector2i, arrow: Arrow) -> bool:
+# Desired facing is an absolute direction
+func is_free(cell: Vector2i, desired_facing: int) -> bool:
 	var cell_type = $ObstacleLayer.get_cell_atlas_coords(cell)
 	# Assume that the cell alternative id corresponds to its cardinal facing
 	# direction
 	var cell_facing = $ObstacleLayer.get_cell_alternative_tile(cell)
 	match cell_type:
 		Constants.ONE_WAY_WALL:
-			return arrow.facing == cell_facing
+			return desired_facing == cell_facing
 		Constants.EMPTY:
 			return true
 		_:
@@ -188,18 +190,18 @@ func redraw_arrows() -> void:
 # Decide facing and destination for this tick. Does not move the arrow yet,
 # so all arrows move simultaneously regardless of processing order
 func plan_move(arrow: Arrow) -> void:
-	if not is_free(arrow.look(Constants.FORWARD), arrow):
+	if not is_free(arrow.look(Constants.FORWARD), arrow.facing):
 		var open_dirs: Array[int] = []
 		for dir in [Constants.RIGHT, Constants.LEFT]:
-			if is_free(arrow.look(dir), arrow):
+			if is_free(arrow.look(dir), arrow.relative_to_cardinal(dir)):
 				open_dirs.append(dir)
 		if len(open_dirs) == 1:
 			arrow.face(open_dirs[0])
-		elif is_free(arrow.look(Constants.BACK), arrow):
+		elif is_free(arrow.look(Constants.BACK), arrow.facing):
 			arrow.face(Constants.BACK)
 		# else: completely boxed in, keep facing and stay put
 	var target = arrow.look(Constants.FORWARD)
-	arrow.next_position = arrow.position if not is_free(target, arrow) else target
+	arrow.next_position = arrow.position if not is_free(target, arrow.facing) else target
 
 
 # Head-on fight: the stronger arrow survives with the absolute difference
@@ -278,7 +280,7 @@ func split_arrow(arrow: Arrow, spawn: Dictionary) -> void:
 	var relative_dirs: Array[int] = [Constants.FORWARD, Constants.LEFT, Constants.RIGHT]
 	for relative_dir in relative_dirs:
 		var pos = arrow.look(relative_dir)
-		if not is_free(pos, arrow):
+		if not is_free(pos, arrow.relative_to_cardinal(relative_dir)):
 			continue
 		var child = Arrow.new(pos, arrow.relative_to_cardinal(relative_dir), arrow.value)
 		if spawn.has(pos):
