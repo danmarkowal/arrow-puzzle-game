@@ -16,6 +16,9 @@ sources/1 = SubResource("TileSetAtlasSource_yi3jx")
 
 [node name="Level" type="Node2D" unique_id=973170473]
 script = ExtResource("2_iss0w")
+notes = "Here we introduce the player to the idea that the arrow will travel in its current direction unless there is something blocking it.
+
+We also help them learn that getting to the 'tick' marked cell lets them complete the current level."
 
 [node name="BuildAreaLayer" type="TileMapLayer" parent="." unique_id=1283605932]
 tile_set = SubResource("TileSet_foxie")

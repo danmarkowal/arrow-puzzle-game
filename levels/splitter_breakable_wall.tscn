@@ -20,6 +20,7 @@ placable_blocks = Dictionary[int, int]({
 0: 10,
 1: 1
 })
+notes = "Here we introduce the breakable block, an obstacle the player has to destroy by using the splitter."
 
 [node name="BuildAreaLayer" type="TileMapLayer" parent="." unique_id=526076150]
 tile_map_data = PackedByteArray("AAABAAMAAQAEAAAAAAABAAIAAQAEAAAAAAABAAEAAQAEAAAAAAABAAAAAQAEAAAAAAABAP//AQAEAAAAAAABAP7/AQAEAAAAAAABAP3/AQAEAAAAAAABAPz/AQAEAAAAAAABAPv/AQAEAAAAAAAAAP//AQAEAAAAAAAAAPv/AQAEAAAAAAD///v/AQAEAAAAAAD///z/AQAEAAAAAAD///3/AQAEAAAAAAD///7/AQAEAAAAAAABAAQAAQAEAAAAAAD/////AQAEAAAAAAA=")

@@ -9,10 +9,18 @@ extends Node2D
 @export var camera: Camera2D
 
 
-var goal_reached = false
-var game_over = false
-var editable = true
-var steps = 0
+var goal_reached: bool = false
+var game_over: bool = false
+var editable: bool = true
+var steps: int = 0
+var action: ActionType = ActionType.NONE
+
+
+enum ActionType {
+	NONE = -1,
+	PLACE_BLOCK,
+	DELETE_BLOCK
+}
 
 
 func add_user_tiles() -> void:
@@ -54,14 +62,11 @@ func restart(first_load: bool) -> void:
 		push_warning("No level scenes assigned.")
 		return
 	load_level_from_scene(level_scenes[current_level], first_load)
-	$BuildAreaLayer.visible = true
 
 
 func clear() -> void:
 	if not editable:
 		return
-	pause()
-	$BuildAreaLayer.visible = true
 	$UserLayer.clear()
 	toolbox.reset()
 
@@ -74,8 +79,6 @@ func update_level(offset: int) -> void:
 		pause()
 		return
 	current_level += offset
-	$UserLayer.clear()
-	$UserLayer.visible = true
 	restart(true)
 	
 
@@ -329,6 +332,7 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 	
 	arrows.clear()
 	$BuildAreaLayer.clear()
+	$BuildAreaLayer.visible = true
 	$ArrowLayer.clear()
 	$LevelLayer.clear()
 	$ObstacleLayer.clear()
@@ -336,9 +340,6 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 	var level = scene.instantiate()
 	var build_area = level.get_node("BuildAreaLayer")
 	var level_layer = level.get_node("LevelLayer")
-		
-	if first_load:
-		toolbox.init(level.placable_blocks)
 	
 	for cell in build_area.get_used_cells():
 		$BuildAreaLayer.set_cell(cell, 0, Constants.BUILD_AREA)
@@ -357,6 +358,12 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 			_:
 				copy_cell(cell, level_layer, $LevelLayer)
 
+	if first_load:
+		$UserLayer.clear()
+		toolbox.init(level.placable_blocks)
+		# This has to be set after cells are copied so the center is correctly
+		# calculated
+		set_camera_position()
 
 	# The instantiated scene is never added to the tree, so we free it 
 	level.free()
@@ -366,14 +373,20 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 		stats.set_steps(steps)
 		stats.set_arrows(len(arrows))
 
-	var used_rect = $ObstacleLayer.get_used_rect()
+
+func set_camera_position() -> void:
+	var layers = [$LevelLayer, $ObstacleLayer, $ArrowLayer]
+	var used_rect = Rect2i()
+	for layer in layers:
+		used_rect = used_rect.merge(layer.get_used_rect())
+	
 	if camera and used_rect.has_area():
 		# Centre of the first and last tile (end is exclusive, hence - ONE).
 		var top_left = $ObstacleLayer.map_to_local(used_rect.position)
 		var bottom_right = $ObstacleLayer.map_to_local(used_rect.end - Vector2i.ONE)
 		var center = (top_left + bottom_right) / 2
 		camera.global_position = $ObstacleLayer.to_global(center)
-		
+
 
 func copy_cell(cell: Vector2i, from: TileMapLayer, to: TileMapLayer) -> void:
 	to.set_cell(cell,
@@ -381,19 +394,18 @@ func copy_cell(cell: Vector2i, from: TileMapLayer, to: TileMapLayer) -> void:
 		from.get_cell_atlas_coords(cell),
 		from.get_cell_alternative_tile(cell))
 
-func process_mouse_edit(button: MouseButton) -> void:
-	var cell = $UserLayer.local_to_map($UserLayer.get_local_mouse_position())
-	if cell not in $BuildAreaLayer.get_used_cells():
+
+func process_mouse_edit() -> void:
+	if not editable:
 		return
-	var layers = [$LevelLayer, $ObstacleLayer, $ArrowLayer]
-	for layer in layers:
-		if layer.get_cell_atlas_coords(cell) != Constants.EMPTY:
-			return
-	match button:
-		MOUSE_BUTTON_LEFT:
-			place_block(cell)
-		MOUSE_BUTTON_RIGHT:
+	var cell = $UserLayer.local_to_map($UserLayer.get_local_mouse_position())
+	match action:
+		ActionType.PLACE_BLOCK:
+			if can_place_block(cell):
+				place_block(cell)
+		ActionType.DELETE_BLOCK:
 			delete_block(cell)
+
 
 func _on_step_timer_timeout() -> void:
 	var moving: Array[Arrow] = []
@@ -446,12 +458,10 @@ func _on_step_timer_timeout() -> void:
 		game_over = true
 		pause()
 
+
 func _process(delta: float) -> void:
-	if editable:
-		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-			process_mouse_edit(MOUSE_BUTTON_LEFT)
-		elif Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
-			process_mouse_edit(MOUSE_BUTTON_RIGHT)
+	process_mouse_edit()
+
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("PauseToggle"):
@@ -467,6 +477,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		next_level()
 	elif event.is_action_pressed("PrevLevel"):
 		previous_level()
+	elif event.is_action_pressed("PlaceBlock") and editable:
+		action = ActionType.PLACE_BLOCK
+	elif event.is_action_pressed("DeleteBlock") and editable:
+		action = ActionType.DELETE_BLOCK
+	elif event.is_action_released("PlaceBlock") \
+		or event.is_action_released("DeleteBlock"):
+		action = ActionType.NONE
 
 
 func can_place_block(cell: Vector2i):
