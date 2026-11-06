@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://cfl1ioyy1s5hm" path="res://scenes/toolbox.tscn" id="9_gqmmt"]
 [ext_resource type="PackedScene" uid="uid://dbh3vsqy2on75" path="res://scenes/control_bar.tscn" id="10_yc10j"]
 [ext_resource type="PackedScene" uid="uid://du3ekpjkopor8" path="res://scenes/stats.tscn" id="11_jscy8"]
+[ext_resource type="PackedScene" uid="uid://dp6fm0opsoa47" path="res://scenes/level_menu.tscn" id="12_eb6dy"]
 [ext_resource type="PackedScene" uid="uid://get3fmac1tiw" path="res://scenes/level_select.tscn" id="12_pm3ni"]
 
 [node name="Node2D" type="Node2D" unique_id=1963476635]
@@ -32,6 +33,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+
+[node name="LevelMenu" parent="CanvasLayer/GUI" unique_id=2126044497 instance=ExtResource("12_eb6dy")]
+layout_mode = 0
+offset_left = 479.0
+offset_top = 115.0
+offset_right = 577.0
+offset_bottom = 140.0
+scale = Vector2(2.0347645, 2.101868)
 
 [node name="Toolbox" parent="CanvasLayer/GUI" unique_id=2075612306 instance=ExtResource("9_gqmmt")]
 layout_mode = 1
@@ -72,6 +81,7 @@ offset_top = -48.0
 offset_right = 76.0
 offset_bottom = -8.0
 
+[connection signal="level_chosen" from="CanvasLayer/GUI/LevelMenu" to="MazeController" method="_on_level_select_in_menu"]
 [connection signal="clear" from="CanvasLayer/GUI/ControlBar" to="MazeController" method="clear"]
 [connection signal="pause" from="CanvasLayer/GUI/ControlBar" to="MazeController" method="pause"]
 [connection signal="play" from="CanvasLayer/GUI/ControlBar" to="MazeController" method="play"]

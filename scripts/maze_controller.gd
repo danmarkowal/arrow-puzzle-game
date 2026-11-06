@@ -319,6 +319,10 @@ func process_interactions(list: Array[Arrow], is_chain: bool, chain_fired: Dicti
 			goal_reached = true
 	return spawn
 
+func _on_level_select_in_menu(scene_index: int) -> void:
+	if scene_index >= level_scenes.size(): return
+	
+	update_level(scene_index - current_level)
 
 func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 	goal_reached = false
@@ -475,6 +479,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		next_level()
 	elif event.is_action_pressed("PrevLevel"):
 		previous_level()
+	elif event.is_action_pressed("LevelSelectMenuToggle"):
+		var level_menu = get_parent().get_node("CanvasLayer/GUI/LevelMenu")
+		if level_menu.toggle_visibility(): pause()
+		else: play()
 
 func can_place_block(cell: Vector2i):
 	# Player can only place blocks in the buildable area
