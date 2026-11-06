@@ -14,9 +14,9 @@ border_width_bottom = 2
 
 [node name="Toolbox" type="PanelContainer" unique_id=1492118507]
 offset_right = 32.0
-offset_bottom = 68.0
+offset_bottom = 32.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ys8or")
 script = ExtResource("1_ys8or")
 
-[node name="Buttons" type="VBoxContainer" parent="." unique_id=2075612306]
+[node name="Buttons" type="HBoxContainer" parent="." unique_id=2097112353]
 layout_mode = 2

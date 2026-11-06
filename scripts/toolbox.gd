@@ -34,6 +34,11 @@ func init(p_placable_blocks: Dictionary[Level.PlacableBlock, int]) -> void:
 		$Buttons.add_child(button)
 		buttons[block_type] = button
 		button.display_count(remaining[block_type])
+	
+	if buttons.is_empty():
+		hide()
+	else:
+		show()
 
 
 func reset() -> void:

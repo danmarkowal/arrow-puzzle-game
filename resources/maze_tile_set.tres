@@ -5,7 +5,17 @@
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0xm2m"]
 texture = ExtResource("1_r7sif")
 texture_region_size = Vector2i(32, 32)
+0:0/next_alternative_id = 4
 0:0/0 = 0
+0:0/1 = 1
+0:0/1/flip_h = true
+0:0/1/transpose = true
+0:0/2 = 2
+0:0/2/flip_h = true
+0:0/2/flip_v = true
+0:0/3 = 3
+0:0/3/flip_v = true
+0:0/3/transpose = true
 1:0/0 = 0
 1:0/0/modulate = Color(0.8, 0.8, 0.8, 1)
 2:0/next_alternative_id = 3

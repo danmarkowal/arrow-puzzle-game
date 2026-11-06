@@ -31,8 +31,10 @@ static func get_placable_block(atlas_coords: Vector2i):
 
 
 @export var placable_blocks: Dictionary[PlacableBlock, int]
+@export_multiline var notes: String
 
 
 func _init() -> void:
-	for block in PLACABLE_ATLAS_COORDS:
-		placable_blocks.set(block, 0)
+	#for block in PLACABLE_ATLAS_COORDS:
+		#placable_blocks.set(block, 0)
+	pass
