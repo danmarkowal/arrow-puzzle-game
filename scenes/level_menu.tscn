@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://dp6fm0opsoa47"]
+
+[ext_resource type="Script" uid="uid://14xdjanv2011" path="res://scripts/level_menu.gd" id="1_yl4fo"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yl4fo"]
+bg_color = Color(0.04449059, 0.16432266, 0.18469413, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[node name="LevelMenu" type="PanelContainer" unique_id=1152322149]
+offset_right = 98.0
+offset_bottom = 24.0
+scale = Vector2(2.1599994, 1.9999992)
+theme_override_styles/panel = SubResource("StyleBoxFlat_yl4fo")
+script = ExtResource("1_yl4fo")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1848669979]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=1273699433]
+layout_mode = 2
+text = "Select a level"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" unique_id=1347680213]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/MarginContainer" unique_id=1924908032]
+layout_mode = 2
+columns = 5
