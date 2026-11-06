@@ -464,6 +464,14 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and not event.echo and editable:
+		var index = 0
+		for button in toolbox.button_group.get_buttons():
+			if event.keycode == KEY_1 + index:
+				button.button_pressed = true
+				button.pressed.emit()
+			index += 1
+				
 	if event.is_action_pressed("PauseToggle"):
 		if $StepTimer.is_stopped():
 			play()
@@ -484,7 +492,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_released("PlaceBlock") \
 		or event.is_action_released("DeleteBlock"):
 		action = ActionType.NONE
-
 
 func can_place_block(cell: Vector2i):
 	# Player can only place blocks in the buildable area

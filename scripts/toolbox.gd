@@ -14,6 +14,7 @@ var button_group := ButtonGroup.new()
 
 
 func init(p_placable_blocks: Dictionary[Level.PlacableBlock, int]) -> void:
+	selected_block = null
 	for child in $Buttons.get_children():
 		$Buttons.remove_child(child)
 		child.queue_free()
