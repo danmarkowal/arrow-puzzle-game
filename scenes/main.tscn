@@ -1,15 +1,7 @@
 [gd_scene format=3 uid="uid://b356kefmsr6mb"]
 
 [ext_resource type="PackedScene" uid="uid://cx4flba2t76wr" path="res://scenes/maze_controller.tscn" id="1_eb6dy"]
-[ext_resource type="PackedScene" uid="uid://jpl7v642vyuu" path="res://levels/movement_straight.tscn" id="2_trceg"]
-[ext_resource type="PackedScene" uid="uid://dbeacd6qrccky" path="res://levels/movement_corner.tscn" id="3_a8y0u"]
-[ext_resource type="PackedScene" uid="uid://bkq673g71tgf6" path="res://levels/movement_back.tscn" id="4_jkv2x"]
-[ext_resource type="PackedScene" uid="uid://brv5a5fsrylse" path="res://levels/placable_wall_intro.tscn" id="5_a8y0u"]
-[ext_resource type="PackedScene" uid="uid://dxjvnei7cfk5x" path="res://levels/splitter_intro.tscn" id="5_eb6dy"]
-[ext_resource type="PackedScene" uid="uid://ck3i56picnh7a" path="res://levels/splitter_breakable_wall.tscn" id="5_jbj1t"]
-[ext_resource type="PackedScene" uid="uid://clp1pf8aqrns7" path="res://levels/splitter_showcase.tscn" id="5_trceg"]
-[ext_resource type="PackedScene" uid="uid://dt2rislccubnt" path="res://levels/generator.tscn" id="6_muem4"]
-[ext_resource type="PackedScene" uid="uid://btgq58w8jme81" path="res://levels/multiple_beams.tscn" id="7_dp3eg"]
+[ext_resource type="Resource" uid="uid://cfytl4b1dms3h" path="res://resources/main_level_list.tres" id="2_o6xl0"]
 [ext_resource type="PackedScene" uid="uid://cfl1ioyy1s5hm" path="res://scenes/toolbox.tscn" id="9_gqmmt"]
 [ext_resource type="PackedScene" uid="uid://dbh3vsqy2on75" path="res://scenes/control_bar.tscn" id="10_yc10j"]
 [ext_resource type="PackedScene" uid="uid://du3ekpjkopor8" path="res://scenes/stats.tscn" id="11_jscy8"]
@@ -19,7 +11,7 @@
 [node name="Node2D" type="Node2D" unique_id=1963476635]
 
 [node name="MazeController" parent="." unique_id=1744428019 node_paths=PackedStringArray("toolbox", "stats", "camera") instance=ExtResource("1_eb6dy")]
-level_scenes = Array[PackedScene]([ExtResource("2_trceg"), ExtResource("3_a8y0u"), ExtResource("4_jkv2x"), ExtResource("5_a8y0u"), ExtResource("5_trceg"), ExtResource("5_eb6dy"), ExtResource("5_jbj1t"), ExtResource("6_muem4"), ExtResource("7_dp3eg")])
+level_list = ExtResource("2_o6xl0")
 toolbox = NodePath("../CanvasLayer/GUI/Toolbox")
 stats = NodePath("../CanvasLayer/GUI/Stats")
 camera = NodePath("../Camera2D")
@@ -88,6 +80,5 @@ offset_bottom = -8.0
 [connection signal="clear" from="CanvasLayer/GUI/ControlBar" to="MazeController" method="clear"]
 [connection signal="pause" from="CanvasLayer/GUI/ControlBar" to="MazeController" method="pause"]
 [connection signal="play" from="CanvasLayer/GUI/ControlBar" to="MazeController" method="play"]
-[connection signal="restart" from="CanvasLayer/GUI/ControlBar" to="MazeController" method="restart" binds= [false]]
 [connection signal="next" from="CanvasLayer/GUI/LevelSelect" to="MazeController" method="next_level"]
 [connection signal="previous" from="CanvasLayer/GUI/LevelSelect" to="MazeController" method="previous_level"]
