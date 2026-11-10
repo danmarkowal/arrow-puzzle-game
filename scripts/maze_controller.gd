@@ -495,8 +495,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		previous_level()
 	elif event.is_action_pressed("LevelSelectMenuToggle"):
 		var level_menu = get_parent().get_node("CanvasLayer/GUI/LevelMenu")
-		if level_menu.toggle_visibility(): pause()
-		else: play()
+		level_menu.toggle_visibility()
 	elif event.is_action_pressed("PlaceBlock") and editable:
 		action = ActionType.PLACE_BLOCK
 	elif event.is_action_pressed("DeleteBlock") and editable:

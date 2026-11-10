@@ -24,7 +24,5 @@ func _on_button_pressed(index: int) -> void:
 	level_chosen.emit(index)
 	toggle_visibility()
 
-func toggle_visibility() -> bool:
-	modulate.a = 0 if modulate.a > 0 else 1
-	process_mode = PROCESS_MODE_DISABLED if process_mode == PROCESS_MODE_INHERIT else PROCESS_MODE_INHERIT
-	return true if modulate.a > 0 else false
+func toggle_visibility() -> void:
+	visible = not visible
