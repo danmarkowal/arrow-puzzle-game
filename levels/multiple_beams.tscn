@@ -16,7 +16,7 @@ sources/1 = SubResource("TileSetAtlasSource_r02ll")
 
 [node name="Level" type="Node2D" unique_id=1237625026]
 script = ExtResource("2_dhnqt")
-placable_blocks = Dictionary[int, int]({
+placeable_blocks = Dictionary[int, int]({
 0: 20,
 1: 1
 })

@@ -364,7 +364,7 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 
 	if first_load:
 		$UserLayer.clear()
-		toolbox.init(level.placable_blocks)
+		toolbox.init(level.placeable_blocks)
 		# This has to be set after cells are copied so the center is correctly
 		# calculated
 		set_camera_position()
@@ -526,7 +526,7 @@ func place_block(cell: Vector2i) -> void:
 
 	if existing_atlas_coords != Constants.EMPTY:
 		# Only look up the block once we know the cell isn't empty
-		var existing_block = Level.get_placable_block(existing_atlas_coords)
+		var existing_block = Level.get_placeable_block(existing_atlas_coords)
 		# Do not replace with the same block as useless
 		if existing_block == selected:
 			return
@@ -541,6 +541,6 @@ func delete_block(cell: Vector2i):
 	var atlas_coords = $UserLayer.get_cell_atlas_coords(cell)
 	if atlas_coords == Constants.EMPTY:
 		return
-	var placable_block = Level.get_placable_block(atlas_coords)
+	var placeable_block = Level.get_placeable_block(atlas_coords)
 	$UserLayer.erase_cell(cell)
-	toolbox.change_count(placable_block, 1)
+	toolbox.change_count(placeable_block, 1)

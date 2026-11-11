@@ -6,16 +6,16 @@ class_name CellButton
 const CELLS_ATLAS := preload("res://resources/cells_atlas.tres")
 
 
-var block_colors: Dictionary[Level.PlacableBlock, Color] = {
-	Level.PlacableBlock.SPLITTER: Color.from_string("#80d4ff", Color.WHITE),
-	Level.PlacableBlock.USER_WALL: Color.from_string("#ffdf80", Color.WHITE)
+var block_colors: Dictionary[Level.PlaceableBlock, Color] = {
+	Level.PlaceableBlock.SPLITTER: Color.from_string("#80d4ff", Color.WHITE),
+	Level.PlaceableBlock.USER_WALL: Color.from_string("#ffdf80", Color.WHITE)
 }
 
 
-@export var block_type: Level.PlacableBlock
+@export var block_type: Level.PlaceableBlock
 
 
-signal block_selected(block_type: Level.PlacableBlock)
+signal block_selected(block_type: Level.PlaceableBlock)
 
 
 func _ready() -> void:
@@ -30,7 +30,7 @@ func _ready() -> void:
 	display_count(0)
 
 
-func get_block_color(block_type: Level.PlacableBlock):
+func get_block_color(block_type: Level.PlaceableBlock):
 	return block_colors.get(block_type, Color.WHITE)
 
 
