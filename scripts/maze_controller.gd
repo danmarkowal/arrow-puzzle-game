@@ -3,7 +3,7 @@ extends Node2D
 
 @export var current_level: int = 0
 @export var step_time: float = 0.2
-@export var level_scenes: Array[PackedScene]
+@export var level_list: LevelList
 @export var toolbox: Toolbox
 @export var stats: Stats
 @export var camera: Camera2D
@@ -58,10 +58,10 @@ func pause() -> void:
 
 
 func restart(first_load: bool) -> void:
-	if level_scenes.is_empty():
+	if level_list.levels.is_empty():
 		push_warning("No level scenes assigned.")
 		return
-	load_level_from_scene(level_scenes[current_level], first_load)
+	load_level_from_scene(level_list.levels[current_level], first_load)
 
 
 func clear() -> void:
@@ -74,7 +74,7 @@ func clear() -> void:
 func update_level(offset: int) -> void:
 	if current_level + offset < 0:
 		return
-	if current_level + offset >= len(level_scenes):
+	if current_level + offset >= len(level_list.levels):
 		print("Well done! All levels completed!")
 		pause()
 		return
@@ -323,7 +323,7 @@ func process_interactions(list: Array[Arrow], is_chain: bool, chain_fired: Dicti
 	return spawn
 
 func _on_level_select_in_menu(scene_index: int) -> void:
-	if scene_index >= level_scenes.size(): return
+	if scene_index >= level_list.levels.size(): return
 	
 	update_level(scene_index - current_level)
 
@@ -400,6 +400,7 @@ func copy_cell(cell: Vector2i, from: TileMapLayer, to: TileMapLayer) -> void:
 
 
 func process_mouse_edit() -> void:
+	$GhostUserLayer.clear()
 	if not editable:
 		return
 	var cell = $UserLayer.local_to_map($UserLayer.get_local_mouse_position())
@@ -409,6 +410,13 @@ func process_mouse_edit() -> void:
 				place_block(cell)
 		ActionType.DELETE_BLOCK:
 			delete_block(cell)
+
+	if can_place_block(cell):
+		var selected = toolbox.selected_block
+		if selected == null or not toolbox.has_remaining(selected):
+			return
+		var atlas_coords = Level.get_block_atlas_coords(selected)
+		$GhostUserLayer.set_cell(cell, 0, atlas_coords)
 
 
 func _on_step_timer_timeout() -> void:
