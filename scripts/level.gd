@@ -2,39 +2,39 @@ extends Node2D
 class_name Level
 
 
-# Not all blocks are placable by the player
+# Not all blocks are placeable by the player
 # Also using enums makes a better DevEx
-enum PlacableBlock {
+enum PlaceableBlock {
 	USER_WALL,
 	SPLITTER
 }
 
 
-const PLACABLE_ATLAS_COORDS: Dictionary[PlacableBlock, Vector2i] = {
-	PlacableBlock.USER_WALL: Constants.USER_WALL,
-	PlacableBlock.SPLITTER: Constants.SPLITTER,
+const PLACEABLE_ATLAS_COORDS: Dictionary[PlaceableBlock, Vector2i] = {
+	PlaceableBlock.USER_WALL: Constants.USER_WALL,
+	PlaceableBlock.SPLITTER: Constants.SPLITTER,
 }
 
 # TODO: Replace this with something cleaner
-const PLACABLE_BLOCKS: Dictionary[Vector2i, PlacableBlock] = {
-	Constants.USER_WALL: PlacableBlock.USER_WALL,
-	Constants.SPLITTER: PlacableBlock.SPLITTER,
+const PLACEABLE_BLOCKS: Dictionary[Vector2i, PlaceableBlock] = {
+	Constants.USER_WALL: PlaceableBlock.USER_WALL,
+	Constants.SPLITTER: PlaceableBlock.SPLITTER,
 }
 
 
-static func get_block_atlas_coords(block: PlacableBlock):
-	return PLACABLE_ATLAS_COORDS[block]
+static func get_block_atlas_coords(block: PlaceableBlock):
+	return PLACEABLE_ATLAS_COORDS[block]
 	
 	
-static func get_placable_block(atlas_coords: Vector2i):
-	return PLACABLE_BLOCKS[atlas_coords]
+static func get_placeable_block(atlas_coords: Vector2i):
+	return PLACEABLE_BLOCKS[atlas_coords]
 
 
-@export var placable_blocks: Dictionary[PlacableBlock, int]
+@export var placeable_blocks: Dictionary[PlaceableBlock, int]
 @export_multiline var notes: String
 
 
 func _init() -> void:
-	#for block in PLACABLE_ATLAS_COORDS:
-		#placable_blocks.set(block, 0)
+	#for block in PLACEABLE_ATLAS_COORDS:
+		#placeable_blocks.set(block, 0)
 	pass

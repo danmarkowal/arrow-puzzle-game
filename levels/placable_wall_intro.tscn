@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://bsr5glx0iy7f8" path="res://levels/template.tscn" id="1_dgggc"]
 
 [node name="Level" unique_id=973170473 instance=ExtResource("1_dgggc")]
-placable_blocks = Dictionary[int, int]({
+placeable_blocks = Dictionary[int, int]({
 0: 20
 })
 
