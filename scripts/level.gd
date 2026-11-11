@@ -6,19 +6,22 @@ class_name Level
 # Also using enums makes a better DevEx
 enum PlaceableBlock {
 	USER_WALL,
-	SPLITTER
+	SPLITTER,
+	TELEPORTER
 }
 
 
 const PLACEABLE_ATLAS_COORDS: Dictionary[PlaceableBlock, Vector2i] = {
 	PlaceableBlock.USER_WALL: Constants.USER_WALL,
 	PlaceableBlock.SPLITTER: Constants.SPLITTER,
+	PlaceableBlock.TELEPORTER: Constants.TELEPORTER
 }
 
 # TODO: Replace this with something cleaner
 const PLACEABLE_BLOCKS: Dictionary[Vector2i, PlaceableBlock] = {
 	Constants.USER_WALL: PlaceableBlock.USER_WALL,
 	Constants.SPLITTER: PlaceableBlock.SPLITTER,
+	Constants.TELEPORTER: PlaceableBlock.TELEPORTER
 }
 
 
