@@ -80,5 +80,6 @@ offset_bottom = -8.0
 [connection signal="clear" from="CanvasLayer/GUI/ControlBar" to="MazeController" method="clear"]
 [connection signal="pause" from="CanvasLayer/GUI/ControlBar" to="MazeController" method="pause"]
 [connection signal="play" from="CanvasLayer/GUI/ControlBar" to="MazeController" method="play"]
+[connection signal="restart" from="CanvasLayer/GUI/ControlBar" to="MazeController" method="restart" binds= [false]]
 [connection signal="next" from="CanvasLayer/GUI/LevelSelect" to="MazeController" method="next_level"]
 [connection signal="previous" from="CanvasLayer/GUI/LevelSelect" to="MazeController" method="previous_level"]
