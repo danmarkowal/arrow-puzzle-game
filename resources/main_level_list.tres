@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dbeacd6qrccky" path="res://levels/movement_corner.tscn" id="2_fcvwk"]
 [ext_resource type="PackedScene" uid="uid://bkq673g71tgf6" path="res://levels/movement_back.tscn" id="3_2rdup"]
 [ext_resource type="PackedScene" uid="uid://brv5a5fsrylse" path="res://levels/placable_wall_intro.tscn" id="4_yxkpx"]
+[ext_resource type="PackedScene" uid="uid://c8s1b14gwdu3t" path="res://levels/block_beam_with_wall.tscn" id="5_fcvwk"]
 [ext_resource type="PackedScene" uid="uid://clp1pf8aqrns7" path="res://levels/splitter_showcase.tscn" id="5_tolgq"]
 [ext_resource type="PackedScene" uid="uid://dxjvnei7cfk5x" path="res://levels/splitter_intro.tscn" id="6_5o8pe"]
 [ext_resource type="PackedScene" uid="uid://dt2rislccubnt" path="res://levels/generator.tscn" id="7_rq5tk"]
@@ -12,5 +13,5 @@
 
 [resource]
 script = ExtResource("1_qtxsk")
-levels = Array[PackedScene]([ExtResource("1_qs11q"), ExtResource("2_fcvwk"), ExtResource("3_2rdup"), ExtResource("4_yxkpx"), ExtResource("5_tolgq"), ExtResource("6_5o8pe"), ExtResource("7_rq5tk"), ExtResource("8_3lelk")])
+levels = Array[PackedScene]([ExtResource("1_qs11q"), ExtResource("2_fcvwk"), ExtResource("3_2rdup"), ExtResource("4_yxkpx"), ExtResource("5_fcvwk"), ExtResource("5_tolgq"), ExtResource("6_5o8pe"), ExtResource("7_rq5tk"), ExtResource("8_3lelk")])
 metadata/_custom_type_script = "uid://dklmnu6mnxuvf"

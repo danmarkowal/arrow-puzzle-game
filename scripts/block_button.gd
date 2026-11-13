@@ -1,6 +1,6 @@
 @tool
 extends Button
-class_name CellButton
+class_name ButtonBlock
 
 
 const CELLS_ATLAS := preload("res://resources/cells_atlas.tres")

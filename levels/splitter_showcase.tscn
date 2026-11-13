@@ -5,7 +5,4 @@
 [node name="Level" unique_id=973170473 instance=ExtResource("1_t8yox")]
 
 [node name="LevelLayer" parent="." index="1" unique_id=1886682121]
-tile_map_data = PackedByteArray("AAAAAP3/AAABAAEAAAD8//3/AAABAAEAAAAEAP3/AAABAAEAAAAAAAEAAAACAAIAAAAFAP3/AAACAAAAAAD7//3/AAACAAAAAAAEAPz/AAABAAEAAAD8//z/AAABAAEAAAD7//z/AAACAAAAAAD9//z/AAACAAAAAAAFAPz/AAACAAAAAAADAPz/AAACAAAAAAD8//7/AAACAAAAAAAEAP7/AAACAAAAAAA=")
-notes = "Here we introduce the player to the first interactable block in the game, the splitter.
-
-Since the splitter can be used in many ways, we want to start simple and get the player to understand the basics: the splitter spawns arrows in all adjacent tiles (except the one the arrow came from) that are not obstructed."
+tile_map_data = PackedByteArray("AAAAAP3/AAABAAEAAAD8//3/AAABAAEAAAAEAP3/AAABAAEAAAAAAAEAAAACAAIAAAAFAP3/AAACAAAAAAD7//3/AAACAAAAAAD8//7/AAACAAAAAAAEAP7/AAACAAAAAAA=")
