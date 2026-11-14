@@ -1,0 +1,189 @@
+[gd_scene format=3 uid="uid://cgnfpcv52ndrj"]
+
+[ext_resource type="Script" uid="uid://cbh7c0b1cpnpe" path="res://scripts/options_menu.gd" id="1_ijpji"]
+[ext_resource type="PackedScene" uid="uid://byc1nh8dmwrlb" path="res://scenes/volume_bar.tscn" id="1_liyum"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_77ufj"]
+bg_color = Color(0.07450981, 0.09411765, 0.14901961, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_liyum"]
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ijpji"]
+bg_color = Color(0.098098494, 0.098098524, 0.098098464, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hm4m4"]
+bg_color = Color(0.3779188, 0.3779189, 0.37791875, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[node name="OptionsMenu" type="Control" unique_id=325307531]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ijpji")
+
+[node name="Dim" type="ColorRect" parent="." unique_id=1443579344]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.3)
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1251222280]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -285.0
+offset_right = 400.0
+offset_bottom = 285.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_77ufj")
+
+[node name="MainLabel" type="Label" parent="." unique_id=1624259968]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -154.0
+offset_top = 60.0
+offset_right = 154.0
+offset_bottom = 142.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 64
+text = "Options"
+horizontal_alignment = 1
+
+[node name="Container" type="VBoxContainer" parent="." unique_id=762457501]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -91.0
+offset_top = -164.0
+offset_right = 91.0
+offset_bottom = 218.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.1, 1.1)
+theme_override_constants/separation = 60
+alignment = 1
+
+[node name="MasterLabel" type="Label" parent="Container" unique_id=1126814478]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Master"
+horizontal_alignment = 1
+
+[node name="MasterVolume" parent="Container/MasterLabel" unique_id=2077058778 instance=ExtResource("1_liyum")]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -243.0
+offset_top = 16.0
+offset_right = 81.99997
+offset_bottom = 45.999985
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.5, 1.5)
+bus_name = "Master"
+
+[node name="MusicLabel" type="Label" parent="Container" unique_id=1688125717]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 48
+text = "Music"
+horizontal_alignment = 1
+
+[node name="MusicVolume" parent="Container/MusicLabel" unique_id=477496018 instance=ExtResource("1_liyum")]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -243.0
+offset_top = 16.0
+offset_right = 81.99997
+offset_bottom = 46.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.5, 1.5)
+bus_name = "Music"
+
+[node name="SFXLabel" type="Label" parent="Container" unique_id=380842403]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 48
+text = "SFX"
+horizontal_alignment = 1
+
+[node name="SFXVolume" parent="Container/SFXLabel" unique_id=1918859236 instance=ExtResource("1_liyum")]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -243.0
+offset_top = 16.0
+offset_right = 81.99997
+offset_bottom = 46.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.5, 1.5)
+bus_name = "SFX"
+
+[node name="Back" type="Button" parent="Container" unique_id=816779487]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 52
+theme_override_styles/normal = SubResource("StyleBoxFlat_liyum")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ijpji")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hm4m4")
+text = "Back"
+
+[connection signal="pressed" from="Container/Back" to="." method="_on_back_pressed"]
