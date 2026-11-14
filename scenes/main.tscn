@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://b356kefmsr6mb"]
 
 [ext_resource type="PackedScene" uid="uid://cx4flba2t76wr" path="res://scenes/maze_controller.tscn" id="1_eb6dy"]
+[ext_resource type="PackedScene" uid="uid://cy0oxofu0y5g3" path="res://levels/test.tscn" id="2_jbj1t"]
 [ext_resource type="PackedScene" uid="uid://jpl7v642vyuu" path="res://levels/movement_straight.tscn" id="2_trceg"]
 [ext_resource type="PackedScene" uid="uid://dbeacd6qrccky" path="res://levels/movement_corner.tscn" id="3_a8y0u"]
 [ext_resource type="PackedScene" uid="uid://bkq673g71tgf6" path="res://levels/movement_back.tscn" id="4_jkv2x"]
@@ -19,7 +20,7 @@
 [node name="Node2D" type="Node2D" unique_id=1963476635]
 
 [node name="MazeController" parent="." unique_id=1744428019 node_paths=PackedStringArray("toolbox", "stats", "camera") instance=ExtResource("1_eb6dy")]
-level_scenes = Array[PackedScene]([ExtResource("2_trceg"), ExtResource("3_a8y0u"), ExtResource("4_jkv2x"), ExtResource("5_a8y0u"), ExtResource("5_trceg"), ExtResource("5_eb6dy"), ExtResource("5_jbj1t"), ExtResource("6_muem4"), ExtResource("7_dp3eg")])
+level_scenes = Array[PackedScene]([ExtResource("2_jbj1t"), ExtResource("2_trceg"), ExtResource("3_a8y0u"), ExtResource("4_jkv2x"), ExtResource("5_a8y0u"), ExtResource("5_trceg"), ExtResource("5_eb6dy"), ExtResource("5_jbj1t"), ExtResource("6_muem4"), ExtResource("7_dp3eg")])
 toolbox = NodePath("../CanvasLayer/GUI/Toolbox")
 stats = NodePath("../CanvasLayer/GUI/Stats")
 camera = NodePath("../Camera2D")

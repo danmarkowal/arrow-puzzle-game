@@ -8,7 +8,6 @@ extends Node2D
 @export var stats: Stats
 @export var camera: Camera2D
 
-
 var goal_reached: bool = false
 var game_over: bool = false
 var editable: bool = true
@@ -307,19 +306,27 @@ func process_interactions(list: Array[Arrow], is_chain: bool, chain_fired: Dicti
 		if not arrow.alive:
 			continue
 		var cell_type = $LevelLayer.get_cell_atlas_coords(arrow.position)
-		if cell_type == Constants.SPLITTER:
-			if is_chain:
-				if chain_fired.has(arrow.position):
-					continue
-				chain_fired[arrow.position] = true
-			split_arrow(arrow, spawn)
-		elif cell_type == Constants.OBSTACLE:
-			kill_arrow(arrow)
-			destroyed.append(arrow.position)
-		elif cell_type == Constants.DESTROYER:
-			kill_arrow(arrow)
-		elif cell_type == Constants.GOAL:
-			goal_reached = true
+
+		match cell_type:
+			Constants.SPLITTER:
+				if is_chain:
+					if chain_fired.has(arrow.position):
+						continue
+					chain_fired[arrow.position] = true
+				split_arrow(arrow, spawn)
+			Constants.OBSTACLE:
+				kill_arrow(arrow)
+				destroyed.append(arrow.position)		
+			Constants.DESTROYER:
+				kill_arrow(arrow)
+			Constants.TELEPORTER:
+				# TODO: Identify its corresponding teleporter and process
+				pass
+			Constants.GOAL:
+				goal_reached = true
+			_:
+				print("ERROR: Unknown cell type.")		
+
 	return spawn
 
 func _on_level_select_in_menu(scene_index: int) -> void:
@@ -344,6 +351,9 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 	var level = scene.instantiate()
 	var build_area = level.get_node("BuildAreaLayer")
 	var level_layer = level.get_node("LevelLayer")
+	
+	# Dict of {Tag: (portal_1, portal_2)} 
+	var portal_pairs:Dictionary[int, Array] = {}
 	
 	for cell in build_area.get_used_cells():
 		$BuildAreaLayer.set_cell(cell, 0, Constants.BUILD_AREA)

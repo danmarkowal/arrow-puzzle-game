@@ -16,6 +16,7 @@ sources/1 = SubResource("TileSetAtlasSource_v5uil")
 
 [node name="Level" type="Node2D" unique_id=1143280282]
 script = ExtResource("2_hbghi")
+placeable_blocks = null
 notes = "Finally, we show all the cases where an arrow will 'backtrack', turning around and travelling in the opposite direction."
 
 [node name="BuildAreaLayer" type="TileMapLayer" parent="." unique_id=1789393449]
@@ -27,3 +28,5 @@ tile_map_data = PackedByteArray("AAABAAQAAAACAAIAAAAAAAAAAAACAAAAAAAAAAEAAAACAAA
 tile_set = ExtResource("1_3hls8")
 rendering_quadrant_size = 32
 script = ExtResource("2_hbghi")
+placeable_blocks = null
+notes = null

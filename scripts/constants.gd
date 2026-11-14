@@ -1,6 +1,5 @@
 extends Node
 
-
 # Block IDs
 const EMPTY = Vector2i(-1, -1)
 const ARROW = Vector2i(0, 0)
@@ -17,7 +16,6 @@ const DEATH = Vector2i(1, 3)
 const BUILD_AREA = Vector2i(4, 0)
 const DESTROYER = Vector2i(0, 4)
 const ONE_WAY_WALL = Vector2i(2, 3)
-
 
 const CELL_SIZE = 32
 

@@ -1,7 +1,6 @@
 extends Node2D
 class_name Level
 
-
 # Not all blocks are placeable by the player
 # Also using enums makes a better DevEx
 enum PlaceableBlock {
@@ -9,7 +8,6 @@ enum PlaceableBlock {
 	SPLITTER,
 	TELEPORTER
 }
-
 
 const PLACEABLE_ATLAS_COORDS: Dictionary[PlaceableBlock, Vector2i] = {
 	PlaceableBlock.USER_WALL: Constants.USER_WALL,
