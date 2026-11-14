@@ -479,17 +479,20 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	# TODO: Fix wrong item being selected sometimes
 	if event is InputEventKey and editable \
 		and event.pressed and not event.echo \
 		and event.keycode >= KEY_0 and event.keycode <= KEY_9:
-		var buttons = toolbox.button_group.get_buttons()
+		var buttons = toolbox.get_buttons()
 		var index = event.keycode - KEY_1
 		if event.keycode == KEY_0:
 			index = 9
 		if index >= 0 and index < buttons.size():
-			buttons[index].button_pressed = true
-			buttons[index].pressed.emit()
+			var currently_pressed = buttons[index].button_pressed
+			buttons[index].button_pressed = not currently_pressed
+			if buttons[index].button_pressed:
+				buttons[index].pressed.emit()
+			else:
+				toolbox.deselect()
 				
 	if event.is_action_pressed("PauseToggle"):
 		if $StepTimer.is_stopped():

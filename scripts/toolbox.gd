@@ -34,7 +34,7 @@ func init(p_placeable_blocks: Dictionary[Level.PlaceableBlock, int]) -> void:
 		$Buttons.add_child(button)
 		buttons[block_type] = button
 		button.display_count(remaining[block_type])
-	
+		
 	if buttons.is_empty():
 		hide()
 	else:
@@ -56,6 +56,14 @@ func change_count(block_type: Level.PlaceableBlock, delta: int) -> void:
 func has_remaining(block_type: Level.PlaceableBlock) -> bool:
 	return remaining.get(block_type, 0) > 0
 
+
+func get_buttons() -> Array[Node]:
+	return $Buttons.get_children()
+
+
+func deselect():
+	selected_block = null
+	
 
 func _on_block_selected(block_type: Level.PlaceableBlock) -> void:
 	selected_block = block_type
