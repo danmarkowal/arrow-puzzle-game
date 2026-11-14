@@ -1,11 +1,11 @@
 [gd_scene format=4 uid="uid://dxjvnei7cfk5x"]
 
-[ext_resource type="Script" uid="uid://cloq8scl3f845" path="res://scripts/level.gd" id="1_itgrl"]
-[ext_resource type="Texture2D" uid="uid://glti0m8xgc0v" path="res://textures/cells.png" id="2_gbi8s"]
-[ext_resource type="TileSet" uid="uid://8caent6sdiiw" path="res://resources/maze_tile_set.tres" id="3_x0cxx"]
+[ext_resource type="Script" uid="uid://cloq8scl3f845" path="res://scripts/level.gd" id="1_bvo6m"]
+[ext_resource type="Texture2D" uid="uid://glti0m8xgc0v" path="res://textures/cells.png" id="2_27fck"]
+[ext_resource type="TileSet" uid="uid://8caent6sdiiw" path="res://resources/maze_tile_set.tres" id="3_rx5yi"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_v5uil"]
-texture = ExtResource("2_gbi8s")
+texture = ExtResource("2_27fck")
 texture_region_size = Vector2i(32, 32)
 4:0/0 = 0
 4:0/0/modulate = Color(0.5, 1, 0.5, 0.24705882)
@@ -15,10 +15,11 @@ tile_size = Vector2i(32, 32)
 sources/1 = SubResource("TileSetAtlasSource_v5uil")
 
 [node name="Level" type="Node2D" unique_id=1143280282]
-script = ExtResource("1_itgrl")
+script = ExtResource("1_bvo6m")
 placeable_blocks = Dictionary[int, int]({
 1: 1
 })
+notes = "Here the player has to use the splitter to change the direction of arrow to "
 
 [node name="BuildAreaLayer" type="TileMapLayer" parent="." unique_id=1789393449]
 tile_map_data = PackedByteArray("AAAAAPj/AQAEAAAAAAAAAPn/AQAEAAAAAAAAAPr/AQAEAAAAAAD///r/AQAEAAAAAAD///n/AQAEAAAAAAD///j/AQAEAAAAAAABAPj/AQAEAAAAAAABAPn/AQAEAAAAAAABAPr/AQAEAAAAAAA=")
@@ -27,5 +28,5 @@ tile_set = SubResource("TileSet_5722l")
 [node name="LevelLayer" type="TileMapLayer" parent="." unique_id=1886682121]
 texture_filter = 1
 tile_map_data = PackedByteArray("AAAAAAAAAAACAAIAAAD9//j/AAACAAAAAAD8//j/AAACAAAAAAD7//j/AAACAAAAAAD7//r/AAACAAAAAAD8//r/AAACAAAAAAD9//r/AAACAAAAAAADAPj/AAACAAAAAAAEAPj/AAACAAAAAAAFAPj/AAACAAAAAAADAPr/AAACAAAAAAAEAPr/AAACAAAAAAAFAPr/AAACAAAAAAAGAPr/AAACAAAAAAAGAPn/AAACAAAAAAAGAPj/AAACAAAAAAD6//j/AAACAAAAAAD6//n/AAACAAAAAAD6//r/AAACAAAAAAD7//n/AAABAAIAAAAFAPn/AAABAAIAAAA=")
-tile_set = ExtResource("3_x0cxx")
+tile_set = ExtResource("3_rx5yi")
 rendering_quadrant_size = 32

@@ -404,6 +404,8 @@ func process_mouse_edit() -> void:
 	if not editable:
 		return
 	var cell = $UserLayer.local_to_map($UserLayer.get_local_mouse_position())
+	if action != ActionType.DELETE_BLOCK and can_place_block(cell):
+		render_ghost_block(cell)
 	match action:
 		ActionType.PLACE_BLOCK:
 			if can_place_block(cell):
@@ -411,12 +413,13 @@ func process_mouse_edit() -> void:
 		ActionType.DELETE_BLOCK:
 			delete_block(cell)
 
-	if can_place_block(cell):
-		var selected = toolbox.selected_block
-		if selected == null or not toolbox.has_remaining(selected):
-			return
-		var atlas_coords = Level.get_block_atlas_coords(selected)
-		$GhostUserLayer.set_cell(cell, 0, atlas_coords)
+
+func render_ghost_block(cell: Vector2i) -> void:
+	var selected = toolbox.selected_block
+	if selected == null or not toolbox.has_remaining(selected):
+		return
+	var atlas_coords = Level.get_block_atlas_coords(selected)
+	$GhostUserLayer.set_cell(cell, 0, atlas_coords)	
 
 
 func _on_step_timer_timeout() -> void:
