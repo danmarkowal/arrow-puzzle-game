@@ -46,6 +46,15 @@ texture_filter = 1
 tile_set = ExtResource("3_yohnu")
 rendering_quadrant_size = 32
 
+[node name="EditorSfxPlayer" type="AudioStreamPlayer" parent="." unique_id=141324755]
+bus = &"SFX"
+
+[node name="LevelSfxPlayer" type="AudioStreamPlayer" parent="." unique_id=132921535]
+bus = &"SFX"
+
+[node name="UiSfxPlayer" type="AudioStreamPlayer" parent="." unique_id=154880403]
+bus = &"SFX"
+
 [node name="StepTimer" type="Timer" parent="." unique_id=102375159]
 wait_time = 0.2
 

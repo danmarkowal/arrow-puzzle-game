@@ -1,6 +1,15 @@
 extends Node2D
 
 
+const PLACE_BLOCK_SOUND = preload("res://audio/place_block.wav")
+const REMOVE_BLOCK_SOUND = preload("res://audio/remove_block.wav")
+const MOVE_SOUND = preload("res://audio/move.wav")
+const PLAY_SOUND = preload("res://audio/play.wav")
+const PAUSE_SOUND = preload("res://audio/pause.wav")
+const RESTART_SOUND = preload("res://audio/restart.wav")
+const CLEAR_SOUND = preload("res://audio/clear.wav")
+
+
 @export var current_level: int = 0
 @export var step_time: float = 0.2
 @export var level_list: LevelList
@@ -47,7 +56,8 @@ func play() -> void:
 	$BuildAreaLayer.visible = false
 	$UserLayer.visible = false
 	$StepTimer.start()
-
+	$UiSfxPlayer.stream = PLAY_SOUND
+	$UiSfxPlayer.play()
 
 func pause() -> void:
 	if $StepTimer.is_stopped():
@@ -55,20 +65,32 @@ func pause() -> void:
 	remove_user_tiles()
 	$UserLayer.visible = true
 	$StepTimer.stop()
+	$UiSfxPlayer.stream = PAUSE_SOUND
+	$UiSfxPlayer.play()
+
 
 
 func restart(first_load: bool) -> void:
 	if level_list.levels.is_empty():
 		push_warning("No level scenes assigned.")
 		return
+	if not first_load and editable:
+		# No need to restart in this case
+		return
 	load_level_from_scene(level_list.levels[current_level], first_load)
+	if not first_load:
+		$UiSfxPlayer.stream = RESTART_SOUND
+		$UiSfxPlayer.play()
 
 
 func clear() -> void:
-	if not editable:
+	# Can't clear or nothing to clear 
+	if not editable or $UserLayer.get_used_cells().size() == 0:
 		return
 	$UserLayer.clear()
 	toolbox.reset()
+	$UiSfxPlayer.stream = CLEAR_SOUND
+	$UiSfxPlayer.play()
 
 
 func update_level(offset: int) -> void:
@@ -408,10 +430,15 @@ func process_mouse_edit() -> void:
 		render_ghost_block(cell)
 	match action:
 		ActionType.PLACE_BLOCK:
-			if can_place_block(cell):
-				place_block(cell)
+			if can_place_block(cell) and place_block(cell):
+				$EditorSfxPlayer.stream = PLACE_BLOCK_SOUND
+				$EditorSfxPlayer.pitch_scale = 1.0 + randf_range(0.0, 0.1)
+				$EditorSfxPlayer.play()
 		ActionType.DELETE_BLOCK:
-			delete_block(cell)
+			if delete_block(cell):
+				$EditorSfxPlayer.stream = REMOVE_BLOCK_SOUND
+				$EditorSfxPlayer.pitch_scale = 1.0 + randf_range(0.0, 0.1)
+				$EditorSfxPlayer.play()
 
 
 func render_ghost_block(cell: Vector2i) -> void:
@@ -467,11 +494,16 @@ func _on_step_timer_timeout() -> void:
 	# Win/lose is decided once per tick, so order of arrows doesn't matter.
 	if goal_reached:
 		print("GOAL!")
-		next_level()
+		goal_reached = true
+		pause()
 	elif arrows.is_empty():
 		print("Game over!")
 		game_over = true
 		pause()
+		
+	if not game_over:
+		$LevelSfxPlayer.stream = MOVE_SOUND
+		$LevelSfxPlayer.play()
 
 
 func _process(delta: float) -> void:
@@ -518,6 +550,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		or event.is_action_released("DeleteBlock"):
 		action = ActionType.NONE
 
+
 func can_place_block(cell: Vector2i):
 	# Player can only place blocks in the buildable area
 	if cell not in $BuildAreaLayer.get_used_cells():
@@ -530,10 +563,10 @@ func can_place_block(cell: Vector2i):
 	return true
 
 
-func place_block(cell: Vector2i) -> void:
+func place_block(cell: Vector2i) -> bool:
 	var selected = toolbox.selected_block
 	if selected == null or not toolbox.has_remaining(selected):
-		return
+		return false
 
 	var atlas_coords = Level.get_block_atlas_coords(selected)
 	var existing_atlas_coords = $UserLayer.get_cell_atlas_coords(cell)
@@ -543,18 +576,20 @@ func place_block(cell: Vector2i) -> void:
 		var existing_block = Level.get_placeable_block(existing_atlas_coords)
 		# Do not replace with the same block as useless
 		if existing_block == selected:
-			return
+			return false
 		# Put back the existing block when replacing it
 		toolbox.change_count(existing_block, 1)
 
 	$UserLayer.set_cell(cell, 0, atlas_coords)
 	toolbox.change_count(selected, -1)
+	return true
 	
 
-func delete_block(cell: Vector2i):
+func delete_block(cell: Vector2i) -> bool:
 	var atlas_coords = $UserLayer.get_cell_atlas_coords(cell)
 	if atlas_coords == Constants.EMPTY:
-		return
+		return false
 	var placeable_block = Level.get_placeable_block(atlas_coords)
 	$UserLayer.erase_cell(cell)
 	toolbox.change_count(placeable_block, 1)
+	return true
