@@ -80,7 +80,7 @@ func update_level(offset: int) -> void:
 		return
 	current_level += offset
 	restart(true)
-	
+
 
 func previous_level() -> void:
 	update_level(-1)
@@ -294,44 +294,40 @@ func split_arrow(arrow: Arrow, spawn: Dictionary) -> void:
 
 # Teleporter
 # Performs similar behaviour to a splitter, except the exit is on the other side of the portal
-
 func teleport_arrow(arrow: Arrow, spawn:Dictionary) -> void:
 	var portal_coords := arrow.position
 	# Fetch tag of this portal
 	var tag = level_cell_data.get(portal_coords).interaction_tag
-	print("Portal tag: ", tag)
-	
+
 	# Find its corresponding portal
 	var other_portal_coords = null
-	
+
 	for key in level_cell_data.keys():
 		if level_cell_data[key].cell_type_id == Constants.TELEPORTER:
 			if level_cell_data[key].interaction_tag == tag and key != portal_coords:
 				# If other portal has already been found, then we have more than 2 portals on the same tag
 				if other_portal_coords != null:
-					print("ERROR: More than 2 portals on one tag.")
+					push_error("ERROR: More than 2 portals on one tag.")
 				else:
 					other_portal_coords = key
-	
+
 	if other_portal_coords == null:
-		print("ERROR: No matching portal found.")
-	else:
-		print("Matching portal found at ", other_portal_coords)
-		
+		push_error("ERROR: No matching portal found.")
+		return
 	# Get arrow facing direction
 	# Get the corresponding cell at the other portal coords
 	# if free, spawn an arrow there
 	var output_block = other_portal_coords + Arrow.cardinal_to_offset(arrow.facing)
 	var output_facing := arrow.facing
 	var can_teleport:bool = true
-	
+
 	if not (is_free(output_block, arrow.facing)):
 		# Output block is not free
 		# Check if left and right are free
 		var right_block = other_portal_coords + Arrow.cardinal_to_offset(arrow.relative_to_cardinal(Constants.RIGHT))
 		var left_block = other_portal_coords + Arrow.cardinal_to_offset(arrow.relative_to_cardinal(Constants.LEFT))
 		var behind_block = other_portal_coords + Arrow.cardinal_to_offset(arrow.relative_to_cardinal(Constants.BACK))
-		
+
 		if (is_free(left_block, arrow.relative_to_cardinal(Constants.LEFT)) and is_free(right_block, arrow.relative_to_cardinal(Constants.RIGHT))):
 			# Left and right free, back free: Bounce
 			if (is_free(behind_block, arrow.relative_to_cardinal(Constants.BACK))):
@@ -347,11 +343,11 @@ func teleport_arrow(arrow: Arrow, spawn:Dictionary) -> void:
 		elif (is_free(right_block, arrow.relative_to_cardinal(Constants.RIGHT))):
 			output_block = right_block
 			output_facing = arrow.relative_to_cardinal(Constants.RIGHT)
-		
+
 		else:
 			# Teleporter is surrounded
 			can_teleport = false
-		
+
 	if can_teleport:
 		# Arrow that will be spawned
 		var child = Arrow.new(output_block, output_facing, arrow.value)
@@ -361,7 +357,7 @@ func teleport_arrow(arrow: Arrow, spawn:Dictionary) -> void:
 			spawn[output_block].absorb(child)
 		else:
 			spawn[output_block] = child
-			
+
 		kill_arrow(arrow)
 
 # Applies tile effects to the given arrows. Obstacle tiles are only queued in
@@ -388,7 +384,7 @@ func process_interactions(list: Array[Arrow], is_chain: bool, chain_fired: Dicti
 				split_arrow(arrow, spawn)
 			Constants.OBSTACLE:
 				kill_arrow(arrow)
-				destroyed.append(arrow.position)		
+				destroyed.append(arrow.position)
 			Constants.DESTROYER:
 				kill_arrow(arrow)
 			Constants.TELEPORTER:
@@ -396,13 +392,12 @@ func process_interactions(list: Array[Arrow], is_chain: bool, chain_fired: Dicti
 			Constants.GOAL:
 				goal_reached = true
 			_:
-				print("ERROR: Unknown cell type.")		
-
+				pass
 	return spawn
 
 func _on_level_select_in_menu(scene_index: int) -> void:
 	if scene_index >= level_scenes.size(): return
-	
+
 	update_level(scene_index - current_level)
 
 func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
@@ -411,19 +406,19 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 	editable = true
 	steps = 0
 	pause()
-	
+
 	arrows.clear()
 	$BuildAreaLayer.clear()
 	$BuildAreaLayer.visible = true
 	$ArrowLayer.clear()
 	$LevelLayer.clear()
 	$ObstacleLayer.clear()
-	
+
 	var level = scene.instantiate()
 	var build_area = level.get_node("BuildAreaLayer")
 	var level_layer = level.get_node("LevelLayer")
 	var level_data = level_layer.get_node("LevelData")
-	
+
 	for cell in build_area.get_used_cells():
 		$BuildAreaLayer.set_cell(cell, 0, Constants.BUILD_AREA)
 
@@ -456,9 +451,9 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 	$LevelLayer/LevelAnnotations.cell_data = level_cell_data
 	$LevelLayer/LevelAnnotations.queue_redraw()
 
-	# The instantiated scene is never added to the tree, so we free it 
+	# The instantiated scene is never added to the tree, so we free it
 	level.free()
-	
+
 
 	redraw_arrows()
 	if stats:
@@ -471,7 +466,7 @@ func set_camera_position() -> void:
 	var used_rect = Rect2i()
 	for layer in layers:
 		used_rect = used_rect.merge(layer.get_used_rect())
-	
+
 	if camera and used_rect.has_area():
 		# Centre of the first and last tile (end is exclusive, hence - ONE).
 		var top_left = $ObstacleLayer.map_to_local(used_rect.position)
@@ -567,7 +562,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if index >= 0 and index < buttons.size():
 			buttons[index].button_pressed = true
 			buttons[index].pressed.emit()
-				
+
 	if event.is_action_pressed("PauseToggle"):
 		if $StepTimer.is_stopped():
 			play()
@@ -623,7 +618,7 @@ func place_block(cell: Vector2i) -> void:
 
 	$UserLayer.set_cell(cell, 0, atlas_coords)
 	toolbox.change_count(selected, -1)
-	
+
 
 func delete_block(cell: Vector2i):
 	var atlas_coords = $UserLayer.get_cell_atlas_coords(cell)

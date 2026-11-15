@@ -3,15 +3,10 @@
 [ext_resource type="PackedScene" uid="uid://bsr5glx0iy7f8" path="res://levels/template.tscn" id="1_e8fte"]
 [ext_resource type="Script" uid="uid://dr1rxp8pig17i" path="res://models/blockdata.gd" id="2_kg802"]
 
-[sub_resource type="Resource" id="Resource_e8fte"]
+[sub_resource type="Resource" id="Resource_32wa3"]
 script = ExtResource("2_kg802")
 cell_type_id = Vector2i(0, 1)
-interaction_tag = 1
-
-[sub_resource type="Resource" id="Resource_kg802"]
-script = ExtResource("2_kg802")
-cell_type_id = Vector2i(0, 1)
-interaction_tag = 2
+interaction_tag = 3
 
 [sub_resource type="Resource" id="Resource_veud7"]
 script = ExtResource("2_kg802")
@@ -23,10 +18,15 @@ script = ExtResource("2_kg802")
 cell_type_id = Vector2i(0, 1)
 interaction_tag = 2
 
-[sub_resource type="Resource" id="Resource_32wa3"]
+[sub_resource type="Resource" id="Resource_e8fte"]
 script = ExtResource("2_kg802")
 cell_type_id = Vector2i(0, 1)
-interaction_tag = 3
+interaction_tag = 1
+
+[sub_resource type="Resource" id="Resource_kg802"]
+script = ExtResource("2_kg802")
+cell_type_id = Vector2i(0, 1)
+interaction_tag = 2
 
 [sub_resource type="Resource" id="Resource_4tuod"]
 script = ExtResource("2_kg802")
