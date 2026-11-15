@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b356kefmsr6mb"]
 
 [ext_resource type="PackedScene" uid="uid://cx4flba2t76wr" path="res://scenes/maze_controller.tscn" id="1_eb6dy"]
-[ext_resource type="PackedScene" uid="uid://cy0oxofu0y5g3" path="res://levels/test.tscn" id="2_jbj1t"]
+[ext_resource type="PackedScene" uid="uid://bho3oogew10pe" path="res://levels/teleporter_test.tscn" id="2_jbj1t"]
 [ext_resource type="PackedScene" uid="uid://jpl7v642vyuu" path="res://levels/movement_straight.tscn" id="2_trceg"]
 [ext_resource type="PackedScene" uid="uid://dbeacd6qrccky" path="res://levels/movement_corner.tscn" id="3_a8y0u"]
 [ext_resource type="PackedScene" uid="uid://bkq673g71tgf6" path="res://levels/movement_back.tscn" id="4_jkv2x"]

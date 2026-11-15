@@ -322,18 +322,47 @@ func teleport_arrow(arrow: Arrow, spawn:Dictionary) -> void:
 	# Get the corresponding cell at the other portal coords
 	# if free, spawn an arrow there
 	var output_block = other_portal_coords + Arrow.cardinal_to_offset(arrow.facing)
+	var output_facing := arrow.facing
+	var can_teleport:bool = true
 	
-	# Arrow that will be spawned
-	var child = Arrow.new(output_block, arrow.facing, arrow.value)
-
-	# Spawn arrow
-	if spawn.has(output_block):
-		spawn[output_block].absorb(child)
-	else:
-		spawn[output_block] = child
+	if not (is_free(output_block, arrow.facing)):
+		# Output block is not free
+		# Check if left and right are free
+		var right_block = other_portal_coords + Arrow.cardinal_to_offset(arrow.relative_to_cardinal(Constants.RIGHT))
+		var left_block = other_portal_coords + Arrow.cardinal_to_offset(arrow.relative_to_cardinal(Constants.LEFT))
+		var behind_block = other_portal_coords + Arrow.cardinal_to_offset(arrow.relative_to_cardinal(Constants.BACK))
 		
-	kill_arrow(arrow)
-	pass
+		if (is_free(left_block, arrow.relative_to_cardinal(Constants.LEFT)) and is_free(right_block, arrow.relative_to_cardinal(Constants.RIGHT))):
+			# Left and right free, back free: Bounce
+			if (is_free(behind_block, arrow.relative_to_cardinal(Constants.BACK))):
+				output_block = behind_block
+				output_facing = arrow.relative_to_cardinal(Constants.BACK)
+			# Left and right free, back not free: Dont teleport
+			else:
+				print("Can't teleport from here, blocked everywhere.")
+				can_teleport = false
+		elif (is_free(left_block, arrow.relative_to_cardinal(Constants.LEFT))):
+			output_block = left_block
+			output_facing = arrow.relative_to_cardinal(Constants.LEFT)
+		elif (is_free(right_block, arrow.relative_to_cardinal(Constants.RIGHT))):
+			output_block = right_block
+			output_facing = arrow.relative_to_cardinal(Constants.RIGHT)
+		
+		else:
+			# Teleporter is surrounded
+			can_teleport = false
+		
+	if can_teleport:
+		# Arrow that will be spawned
+		var child = Arrow.new(output_block, output_facing, arrow.value)
+
+		# Spawn arrow
+		if spawn.has(output_block):
+			spawn[output_block].absorb(child)
+		else:
+			spawn[output_block] = child
+			
+		kill_arrow(arrow)
 
 # Applies tile effects to the given arrows. Obstacle tiles are only queued in
 # `destroyed` so that several arrows hitting the same obstacle on one tick all die.
