@@ -6,7 +6,7 @@ extends Node2D
 @export var level_list: LevelList
 @export var toolbox: Toolbox
 @export var stats: Stats
-@export var camera: Camera2D
+@export var camera: InputCam
 
 
 var goal_reached: bool = false
@@ -389,7 +389,7 @@ func set_camera_position() -> void:
 		var top_left = $ObstacleLayer.map_to_local(used_rect.position)
 		var bottom_right = $ObstacleLayer.map_to_local(used_rect.end - Vector2i.ONE)
 		var center = (top_left + bottom_right) / 2
-		camera.global_position = $ObstacleLayer.to_global(center)
+		camera.set_camera($ObstacleLayer.to_global(center))
 
 
 func copy_cell(cell: Vector2i, from: TileMapLayer, to: TileMapLayer) -> void:
@@ -401,6 +401,7 @@ func copy_cell(cell: Vector2i, from: TileMapLayer, to: TileMapLayer) -> void:
 
 func process_mouse_edit() -> void:
 	$GhostUserLayer.clear()
+	$GhostUserLayer.visible = !camera.is_dragging()
 	if not editable:
 		return
 	var cell = $UserLayer.local_to_map($UserLayer.get_local_mouse_position())
@@ -510,12 +511,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("LevelSelectMenuToggle"):
 		var level_menu = get_parent().get_node("CanvasLayer/GUI/LevelMenu")
 		level_menu.toggle_visibility()
-	elif event.is_action_pressed("PlaceBlock") and editable:
+	elif event.is_action_pressed("PlaceBlock") and \
+	 not camera.is_dragging() and editable:
 		action = ActionType.PLACE_BLOCK
 	elif event.is_action_pressed("DeleteBlock") and editable:
 		action = ActionType.DELETE_BLOCK
 	elif event.is_action_released("PlaceBlock") \
-		or event.is_action_released("DeleteBlock"):
+		or event.is_action_released("DeleteBlock") \
+		or camera.is_dragging():
 		action = ActionType.NONE
 
 func can_place_block(cell: Vector2i):
