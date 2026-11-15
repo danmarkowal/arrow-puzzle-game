@@ -10,25 +10,32 @@ var interactable_cell_data: Dictionary[Vector2i, BlockData]
 func scan_level_layer() -> void:
 	# TODO: Verify non-safe function
 	var layer := get_parent() as TileMapLayer
+	if layer == null:
+		push_error("LevelData must be a child of a TileMapLayer")
+		return
+		
+	# We have to make a new dict and then replace for godot to realise the property changed
+	var new_dict: Dictionary[Vector2i, BlockData] = {}
 	
-	# Remove tiles that are no longer there
-	# Or are changed
-	for tile_coords in interactable_cell_data.keys():
-		var atlas_coords := layer.get_cell_atlas_coords(tile_coords)
-#		# If cell type is no longer the same, remove
-		if (interactable_cell_data[tile_coords].cell_type_id != atlas_coords):
-			interactable_cell_data.erase(tile_coords)
 	for tile_coords in layer.get_used_cells():
-		# Get cell type
 		var atlas_coords := layer.get_cell_atlas_coords(tile_coords)
-		# TODO: Make this a list
-		if (atlas_coords == Constants.TELEPORTER or atlas_coords == Constants.BUTTON):
-			# Initialise new cells
-			if not (tile_coords in interactable_cell_data):
-				interactable_cell_data[tile_coords] = BlockData.new()
-				interactable_cell_data[tile_coords].cell_type_id = atlas_coords
-				interactable_cell_data[tile_coords].interaction_tag = -1
-			pass
+		# Skip non-interactable blocks - TODO: Make this a list
+		if not (atlas_coords == Constants.TELEPORTER or atlas_coords == Constants.BUTTON):
+			continue
+		
+		var existing_data:BlockData = interactable_cell_data.get(tile_coords)
+		if (existing_data != null and atlas_coords == existing_data.cell_type_id):
+			# Unchanged block
+			new_dict[tile_coords] = existing_data
+		else:
+			# New/changed block
+			var block = BlockData.new()
+			block.cell_type_id = atlas_coords
+			block.interaction_tag = -1
+			new_dict[tile_coords] = block
+			
+	
+	interactable_cell_data = new_dict
 	
 	# Refresh in inspector
 	if Engine.is_editor_hint():

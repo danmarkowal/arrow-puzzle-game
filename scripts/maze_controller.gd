@@ -13,6 +13,7 @@ var game_over: bool = false
 var editable: bool = true
 var steps: int = 0
 var action: ActionType = ActionType.NONE
+var level_cell_data: Dictionary[Vector2i, BlockData]
 
 
 enum ActionType {
@@ -291,6 +292,48 @@ func split_arrow(arrow: Arrow, spawn: Dictionary) -> void:
 			spawn[pos] = child
 	kill_arrow(arrow)
 
+# Teleporter
+# Performs similar behaviour to a splitter, except the exit is on the other side of the portal
+
+func teleport_arrow(arrow: Arrow, spawn:Dictionary) -> void:
+	var portal_coords := arrow.position
+	# Fetch tag of this portal
+	var tag = level_cell_data.get(portal_coords).interaction_tag
+	print("Portal tag: ", tag)
+	
+	# Find its corresponding portal
+	var other_portal_coords = null
+	
+	for key in level_cell_data.keys():
+		if level_cell_data[key].cell_type_id == Constants.TELEPORTER:
+			if level_cell_data[key].interaction_tag == tag and key != portal_coords:
+				# If other portal has already been found, then we have more than 2 portals on the same tag
+				if other_portal_coords != null:
+					print("ERROR: More than 2 portals on one tag.")
+				else:
+					other_portal_coords = key
+	
+	if other_portal_coords == null:
+		print("ERROR: No matching portal found.")
+	else:
+		print("Matching portal found at ", other_portal_coords)
+		
+	# Get arrow facing direction
+	# Get the corresponding cell at the other portal coords
+	# if free, spawn an arrow there
+	var output_block = other_portal_coords + Arrow.cardinal_to_offset(arrow.facing)
+	
+	# Arrow that will be spawned
+	var child = Arrow.new(output_block, arrow.facing, arrow.value)
+
+	# Spawn arrow
+	if spawn.has(output_block):
+		spawn[output_block].absorb(child)
+	else:
+		spawn[output_block] = child
+		
+	kill_arrow(arrow)
+	pass
 
 # Applies tile effects to the given arrows. Obstacle tiles are only queued in
 # `destroyed` so that several arrows hitting the same obstacle on one tick all die.
@@ -320,8 +363,7 @@ func process_interactions(list: Array[Arrow], is_chain: bool, chain_fired: Dicti
 			Constants.DESTROYER:
 				kill_arrow(arrow)
 			Constants.TELEPORTER:
-				# TODO: Identify its corresponding teleporter and process
-				pass
+				teleport_arrow(arrow, spawn)
 			Constants.GOAL:
 				goal_reached = true
 			_:
@@ -351,9 +393,7 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 	var level = scene.instantiate()
 	var build_area = level.get_node("BuildAreaLayer")
 	var level_layer = level.get_node("LevelLayer")
-	
-	# Dict of {Tag: (portal_1, portal_2)} 
-	var portal_pairs:Dictionary[int, Array] = {}
+	var level_data = level_layer.get_node("LevelData")
 	
 	for cell in build_area.get_used_cells():
 		$BuildAreaLayer.set_cell(cell, 0, Constants.BUILD_AREA)
@@ -379,8 +419,13 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 		# calculated
 		set_camera_position()
 
+	# Load interactable cell data into the maze controller
+	level_data.scan_level_layer()
+	level_cell_data = level_data.interactable_cell_data
+
 	# The instantiated scene is never added to the tree, so we free it 
 	level.free()
+	
 
 	redraw_arrows()
 	if stats:
