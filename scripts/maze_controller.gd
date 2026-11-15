@@ -423,6 +423,10 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 	level_data.scan_level_layer()
 	level_cell_data = level_data.interactable_cell_data
 
+	# Draw annotations on interactable cells
+	$LevelLayer/LevelAnnotations.cell_data = level_cell_data
+	$LevelLayer/LevelAnnotations.queue_redraw()
+
 	# The instantiated scene is never added to the tree, so we free it 
 	level.free()
 	
