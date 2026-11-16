@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BlockResource" format=3 uid="uid://d0aqam2n1gjhn"]
+
+[ext_resource type="Script" uid="uid://co5pjp1s1d23k" path="res://resources/block_resource.gd" id="1_cknkt"]
+
+[resource]
+script = ExtResource("1_cknkt")
+atlas_coords = Vector2i(0, 4)
+name = "Destroyer"
+type = 1
+placeable = true
+metadata/_custom_type_script = "uid://co5pjp1s1d23k"

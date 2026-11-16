@@ -12,11 +12,14 @@ const BUTTON = Vector2i(2, 1)
 const REWIND = Vector2i(0, 2)
 const START = Vector2i(2, 2)
 const GOAL = Vector2i(1, 2)
-const USER_WALL = Vector2i(0, 3)
 const DEATH = Vector2i(1, 3)
 const BUILD_AREA = Vector2i(4, 0)
 const DESTROYER = Vector2i(0, 4)
 const ONE_WAY_WALL = Vector2i(2, 3)
+
+# Placeable variants
+const PLACEABLE_WALL = Vector2i(0, 3)
+const PLACEABLE_ONE_WAY_WALL = Vector2i(3, 4)
 
 
 const CELL_SIZE = 32

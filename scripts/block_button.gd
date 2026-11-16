@@ -3,35 +3,34 @@ extends Button
 class_name ButtonBlock
 
 
-const CELLS_ATLAS := preload("res://resources/cells_atlas.tres")
+const CELLS_ATLAS := preload("res://resources/cells_atlas.tres") as AtlasTexture
+const CELLS_TILE_SET := preload("res://resources/maze_tile_set.tres") as TileSet
 
 
-var block_colors: Dictionary[Level.PlaceableBlock, Color] = {
-	Level.PlaceableBlock.SPLITTER: Color.from_string("#80d4ff", Color.WHITE),
-	Level.PlaceableBlock.USER_WALL: Color.from_string("#ffdf80", Color.WHITE)
-}
+@export var block: BlockResource
 
 
-@export var block_type: Level.PlaceableBlock
-
-
-signal block_selected(block_type: Level.PlaceableBlock)
+signal block_selected(block: BlockResource)
 
 
 func _ready() -> void:
-	# Set icon texture
-	var icon_texture = CELLS_ATLAS.duplicate()
-	add_theme_color_override("icon_normal_color", get_block_color(block_type))
-	var atlas_coords = Level.get_block_atlas_coords(block_type)
-	icon_texture.region.position = Vector2(atlas_coords * Constants.CELL_SIZE)
-	icon = icon_texture
+	# Set icon color based on the modulate color from the tile set
+	var src: TileSetAtlasSource = CELLS_TILE_SET.get_source(0)
+	# Assume that all alternative tiles have the same color
+	var data := src.get_tile_data(block.atlas_coords, 0)
+	var color := data.modulate
+	# I don't know any other way of setting these all at once
+	add_theme_color_override("icon_normal_color", color)
+	add_theme_color_override("icon_hover_color", color)
+	add_theme_color_override("icon_pressed_color", color)
+	add_theme_color_override("icon_hover_pressed_color", color)
 	
-	# Default
-	display_count(0)
+	# Set icon texture
+	var icon_texture: AtlasTexture = CELLS_ATLAS.duplicate()
 
-
-func get_block_color(block_type: Level.PlaceableBlock):
-	return block_colors.get(block_type, Color.WHITE)
+	icon_texture.region.position = Vector2(block.atlas_coords * Constants.CELL_SIZE)
+	icon = icon_texture
+	tooltip_text = block.name
 
 
 func display_count(p_count: int):
@@ -39,4 +38,4 @@ func display_count(p_count: int):
 
 
 func _on_pressed() -> void:
-	block_selected.emit(block_type)
+	block_selected.emit(block)

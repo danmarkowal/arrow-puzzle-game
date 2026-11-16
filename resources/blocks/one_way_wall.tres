@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="BlockResource" format=3 uid="uid://4jr35640yq51"]
+
+[ext_resource type="Script" uid="uid://co5pjp1s1d23k" path="res://resources/block_resource.gd" id="1_6avaw"]
+
+[resource]
+script = ExtResource("1_6avaw")
+atlas_coords = Vector2i(2, 3)
+name = "One Way Wall"
+rotatable = true
+metadata/_custom_type_script = "uid://co5pjp1s1d23k"
