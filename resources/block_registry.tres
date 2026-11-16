@@ -11,8 +11,9 @@
 [ext_resource type="Resource" uid="uid://668ilnuo8dvi" path="res://resources/blocks/placeable_wall.tres" id="8_ttect"]
 [ext_resource type="Resource" uid="uid://b4bi5okr0k5db" path="res://resources/blocks/splitter.tres" id="9_vovpw"]
 [ext_resource type="Resource" uid="uid://dubxxabd65x6s" path="res://resources/blocks/wall.tres" id="10_8a7dj"]
+[ext_resource type="Resource" uid="uid://1281t43ynnkm" path="res://resources/blocks/goal.tres" id="11_nmxxq"]
 
 [resource]
 script = ExtResource("2_eij13")
-blocks = Array[ExtResource("1_b5i5q")]([ExtResource("2_kgppn"), ExtResource("3_kv5i2"), ExtResource("4_y5gds"), ExtResource("5_x0pwm"), ExtResource("6_3qg83"), ExtResource("7_gs2ar"), ExtResource("8_ttect"), ExtResource("9_vovpw"), ExtResource("10_8a7dj")])
+blocks = Array[ExtResource("1_b5i5q")]([ExtResource("2_kgppn"), ExtResource("3_kv5i2"), ExtResource("4_y5gds"), ExtResource("5_x0pwm"), ExtResource("6_3qg83"), ExtResource("7_gs2ar"), ExtResource("8_ttect"), ExtResource("9_vovpw"), ExtResource("10_8a7dj"), ExtResource("11_nmxxq")])
 metadata/_custom_type_script = "uid://j20w73v04tkf"

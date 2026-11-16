@@ -39,6 +39,9 @@ func add_user_tiles() -> void:
 		var atlas_coords: Vector2i = $UserLayer.get_cell_atlas_coords(cell)
 		var block_rotation: int = $UserLayer.get_cell_alternative_tile(cell)
 		var block := BLOCK_REGISTRY.get_block(atlas_coords)
+		if block.atlas_coords == Constants.ARROW:
+			arrows.push_back(Arrow.new(cell, block_rotation))
+			continue
 		var layer: TileMapLayer
 		match block.type:
 			BlockResource.BlockType.OBSTACLE:
@@ -46,21 +49,18 @@ func add_user_tiles() -> void:
 			BlockResource.BlockType.INTERACTABLE:
 				layer = $LevelLayer
 		layer.set_cell(cell, 0, block.atlas_coords, block_rotation)
-
-
-func remove_user_tiles() -> void:
-	for cell in $UserLayer.get_used_cells():
-		$LevelLayer.erase_cell(cell)
-		$ObstacleLayer.erase_cell(cell)
+	redraw_arrows()
 
 
 func play() -> void:
 	if not $StepTimer.is_stopped() or goal_reached or game_over:
 		return
-	editable = false
-	add_user_tiles()
-	$BuildAreaLayer.visible = false
-	$UserLayer.visible = false
+	# Only add the user tiles once, when the user first presses play without a reset
+	if editable:
+		add_user_tiles()
+		editable = false
+		$BuildAreaLayer.visible = false
+		$UserLayer.visible = false
 	$StepTimer.start()
 	$UiSfxPlayer.stream = PLAY_SOUND
 	$UiSfxPlayer.play()
@@ -68,8 +68,6 @@ func play() -> void:
 func pause() -> void:
 	if $StepTimer.is_stopped():
 		return
-	remove_user_tiles()
-	$UserLayer.visible = true
 	$StepTimer.stop()
 	$UiSfxPlayer.stream = PAUSE_SOUND
 	$UiSfxPlayer.play()
@@ -199,23 +197,11 @@ func kill_arrow(arrow: Arrow) -> void:
 var arrow_art_facing: int = Constants.NORTH
 
 
-# Tile transform flags that rotate the arrow artwork to point along `facing`
-func facing_to_tile_alternative(facing: int) -> int:
-	var quarter_turns = posmod(facing - arrow_art_facing, 4)
-	if quarter_turns == 1: # 90 degrees clockwise
-		return TileSetAtlasSource.TRANSFORM_TRANSPOSE | TileSetAtlasSource.TRANSFORM_FLIP_H
-	elif quarter_turns == 2: # 180 degrees
-		return TileSetAtlasSource.TRANSFORM_FLIP_H | TileSetAtlasSource.TRANSFORM_FLIP_V
-	elif quarter_turns == 3: # 90 degrees counter-clockwise
-		return TileSetAtlasSource.TRANSFORM_TRANSPOSE | TileSetAtlasSource.TRANSFORM_FLIP_V
-	return 0
-
-
 func redraw_arrows() -> void:
 	# Redrawing from the arrow list avoids erasing a tile another arrow is on
 	$ArrowLayer.clear()
 	for arrow in arrows:
-		$ArrowLayer.set_cell(arrow.position, 0, Constants.ARROW, facing_to_tile_alternative(arrow.facing))
+		$ArrowLayer.set_cell(arrow.position, 0, Constants.ARROW, arrow.facing)
 
 
 # Decide facing and destination for this tick. Does not move the arrow yet,
@@ -363,8 +349,8 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 	pause()
 	
 	arrows.clear()
-	$BuildAreaLayer.clear()
 	$BuildAreaLayer.visible = true
+	$UserLayer.visible = true
 	$ArrowLayer.clear()
 	$LevelLayer.clear()
 	$ObstacleLayer.clear()
@@ -373,26 +359,30 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 	level.init()
 	var build_area = level.get_node("BuildAreaLayer")
 	var level_layer = level.get_node("LevelLayer")
-	
-	for cell in build_area.get_used_cells():
-		$BuildAreaLayer.set_cell(cell, 0, Constants.BUILD_AREA)
 
 	# Move cells from level into different layers
 	for cell in level_layer.get_used_cells():
-		var cell_type = level_layer.get_cell_atlas_coords(cell)
-		match cell_type:
-			# Obstacles go on the obstacle layer
-			Constants.WALL, Constants.ONE_WAY_WALL, Constants.PLACEABLE_ONE_WAY_WALL:
-				copy_cell(cell, level_layer, $ObstacleLayer)
-			# Add arrows from the start node
-			Constants.START:
-				arrows.push_back(Arrow.new(cell))
-			# Interactables go on the level layer
-			_:
-				copy_cell(cell, level_layer, $LevelLayer)
+		var atlas_coords: Vector2i = level_layer.get_cell_atlas_coords(cell)
+		var block_rotation: int = level_layer.get_cell_alternative_tile(cell)
+		print(atlas_coords)
+		var block := BLOCK_REGISTRY.get_block(atlas_coords)
+		if block.atlas_coords == Constants.ARROW:
+			arrows.push_back(Arrow.new(cell, block_rotation))
+			continue
+		var layer: TileMapLayer
+		match block.type:
+			BlockResource.BlockType.OBSTACLE:
+				layer = $ObstacleLayer
+			BlockResource.BlockType.INTERACTABLE:
+				layer = $LevelLayer
+		layer.set_cell(cell, 0, block.atlas_coords, block_rotation)
 
 	if first_load:
+		# Only clear the user layer if we are starting a fresh level
 		$UserLayer.clear()
+		$BuildAreaLayer.clear()
+		for cell in build_area.get_used_cells():
+			$BuildAreaLayer.set_cell(cell, 0, Constants.BUILD_AREA)
 		toolbox.init(level.block_counts)
 		# This has to be set after cells are copied so the center is correctly
 		# calculated
