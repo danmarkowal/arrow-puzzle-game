@@ -4,7 +4,7 @@ class_name BlockResource
 
 enum BlockType {
 	OBSTACLE,
-	INTERACTABLE
+	INTERACTABLE,
 }
 
 

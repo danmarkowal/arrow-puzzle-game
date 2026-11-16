@@ -6,4 +6,4 @@
 notes = "Here we introduce the player to the splitter block, starting off simple by showing them how the splitter splits an arrow (spawns arrows on all empty adjacent spaces, except for the one the arrow came from)."
 
 [node name="LevelLayer" parent="." index="1" unique_id=1886682121]
-tile_map_data = PackedByteArray("AAAAAP3/AAABAAEAAAAAAAIAAAACAAIAAAD///X/AAACAAAAAAD///b/AAACAAAAAAAAAPX/AAACAAAAAAAAAPb/AAABAAIAAAABAPX/AAACAAAAAAABAPb/AAACAAAAAAA=")
+tile_map_data = PackedByteArray("AAAAAP3/AAABAAEAAAD///X/AAACAAAAAAD///b/AAACAAAAAAAAAPX/AAACAAAAAAAAAPb/AAABAAIAAAABAPX/AAACAAAAAAABAPb/AAACAAAAAAAAAAQAAAAAAAAAAAA=")
