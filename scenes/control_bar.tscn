@@ -2,10 +2,7 @@
 
 [ext_resource type="Script" uid="uid://nmwyhfdisjo3" path="res://scripts/control_bar.gd" id="1_8o75f"]
 [ext_resource type="Texture2D" uid="uid://glti0m8xgc0v" path="res://textures/cells.png" id="1_kom4c"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0xm2m"]
-atlas = ExtResource("1_kom4c")
-region = Rect2(96, 0, 32, 32)
+[ext_resource type="PackedScene" uid="uid://gx8yy30vr5sa" path="res://scenes/juicy_button.tscn" id="2_4tmid"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_h2yge"]
 atlas = ExtResource("1_kom4c")
@@ -24,29 +21,25 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_8o75f")
 
-[node name="PlayButton" type="Button" parent="." unique_id=2098423188]
+[node name="PlayButton" parent="." unique_id=1290810490 instance=ExtResource("2_4tmid")]
 layout_mode = 2
-tooltip_text = "Play"
-focus_mode = 0
-icon = SubResource("AtlasTexture_0xm2m")
 
-[node name="PauseButton" type="Button" parent="." unique_id=100066575]
+[node name="PauseButton" parent="." unique_id=1437695982 instance=ExtResource("2_4tmid")]
 layout_mode = 2
 tooltip_text = "Pause"
-focus_mode = 0
 icon = SubResource("AtlasTexture_h2yge")
 
-[node name="RestartButton" type="Button" parent="." unique_id=909831330]
+[node name="RestartButton" parent="." unique_id=247275486 instance=ExtResource("2_4tmid")]
 layout_mode = 2
 tooltip_text = "Restart"
-focus_mode = 0
 icon = SubResource("AtlasTexture_1bvp3")
 
-[node name="ClearButton" type="Button" parent="." unique_id=485242191]
+[node name="ClearButton" parent="." unique_id=473139324 instance=ExtResource("2_4tmid")]
 layout_mode = 2
 tooltip_text = "Clear"
-focus_mode = 0
 icon = SubResource("AtlasTexture_8o75f")
+
+[node name="SFXPlayer" type="AudioStreamPlayer" parent="." unique_id=1225924577]
 
 [connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="PauseButton" to="." method="_on_pause_button_pressed"]

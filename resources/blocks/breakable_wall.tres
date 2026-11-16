@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="BlockResource" format=3 uid="uid://co1w4k7ugfan0"]
+
+[ext_resource type="Script" uid="uid://co5pjp1s1d23k" path="res://resources/block_resource.gd" id="1_pv353"]
+
+[resource]
+script = ExtResource("1_pv353")
+atlas_coords = Vector2i(1, 0)
+name = "Breakable Wall"
+type = 1
+metadata/_custom_type_script = "uid://co5pjp1s1d23k"

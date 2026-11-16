@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://gx8yy30vr5sa"]
+
+[ext_resource type="Texture2D" uid="uid://glti0m8xgc0v" path="res://textures/cells.png" id="1_d6rxh"]
+[ext_resource type="Script" uid="uid://dwnjblsnort4t" path="res://scripts/juicy_button.gd" id="2_87skf"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0xm2m"]
+atlas = ExtResource("1_d6rxh")
+region = Rect2(96, 0, 32, 32)
+
+[node name="JuicyButton" type="Button" unique_id=1290810490]
+offset_transform_enabled = true
+focus_mode = 0
+icon = SubResource("AtlasTexture_0xm2m")
+script = ExtResource("2_87skf")
+k = 100.0
+damping = 0.8
+
+[node name="SfxPlayer" type="AudioStreamPlayer" parent="." unique_id=1862469481]
+volume_db = -3.0
+bus = &"SFX"
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="pressed" from="." to="." method="_on_pressed"]

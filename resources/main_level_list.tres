@@ -10,8 +10,9 @@
 [ext_resource type="PackedScene" uid="uid://dxjvnei7cfk5x" path="res://levels/splitter_horizontal.tscn" id="6_5o8pe"]
 [ext_resource type="PackedScene" uid="uid://dt2rislccubnt" path="res://levels/generator.tscn" id="7_rq5tk"]
 [ext_resource type="PackedScene" uid="uid://btgq58w8jme81" path="res://levels/multiple_beams.tscn" id="8_3lelk"]
+[ext_resource type="PackedScene" uid="uid://cy0oxofu0y5g3" path="res://levels/test.tscn" id="10_2rdup"]
 
 [resource]
 script = ExtResource("1_qtxsk")
-levels = Array[PackedScene]([ExtResource("1_qs11q"), ExtResource("2_fcvwk"), ExtResource("3_2rdup"), ExtResource("4_yxkpx"), ExtResource("5_fcvwk"), ExtResource("5_tolgq"), ExtResource("6_5o8pe"), ExtResource("7_rq5tk"), ExtResource("8_3lelk")])
+levels = Array[PackedScene]([ExtResource("10_2rdup"), ExtResource("1_qs11q"), ExtResource("2_fcvwk"), ExtResource("3_2rdup"), ExtResource("4_yxkpx"), ExtResource("5_fcvwk"), ExtResource("5_tolgq"), ExtResource("6_5o8pe"), ExtResource("7_rq5tk"), ExtResource("8_3lelk")])
 metadata/_custom_type_script = "uid://dklmnu6mnxuvf"
