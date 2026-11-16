@@ -379,17 +379,16 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 
 
 func set_camera_position() -> void:
-	var layers = [$LevelLayer, $ObstacleLayer, $ArrowLayer]
+	var layers = [$LevelLayer, $ObstacleLayer, $ArrowLayer, $BuildAreaLayer]
 	var used_rect = Rect2i()
 	for layer in layers:
 		used_rect = used_rect.merge(layer.get_used_rect())
 	
 	if camera and used_rect.has_area():
-		# Centre of the first and last tile (end is exclusive, hence - ONE).
-		var top_left = $ObstacleLayer.map_to_local(used_rect.position)
-		var bottom_right = $ObstacleLayer.map_to_local(used_rect.end - Vector2i.ONE)
-		var center = (top_left + bottom_right) / 2
-		camera.set_camera($ObstacleLayer.to_global(center))
+		var rendered_size = Vector2i($ObstacleLayer.rendering_quadrant_size, $ObstacleLayer.rendering_quadrant_size)
+		used_rect.size *= rendered_size
+		used_rect.position *= rendered_size
+		camera.set_camera(used_rect)
 
 
 func copy_cell(cell: Vector2i, from: TileMapLayer, to: TileMapLayer) -> void:
