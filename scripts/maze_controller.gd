@@ -20,11 +20,13 @@ const CLEAR_SOUND = preload("res://audio/clear.wav")
 @export var camera: InputCam
 
 
+var playing: bool = false
 var goal_reached: bool = false
 var game_over: bool = false
 var editable: bool = true
 var steps: int = 0
 var action: ActionType = ActionType.NONE
+var start_time: int = 0
 
 
 enum ActionType {
@@ -53,7 +55,7 @@ func add_user_tiles() -> void:
 
 
 func play() -> void:
-	if not $StepTimer.is_stopped() or goal_reached or game_over:
+	if playing or goal_reached or game_over:
 		return
 	# Only add the user tiles once, when the user first presses play without a reset
 	if editable:
@@ -61,14 +63,15 @@ func play() -> void:
 		editable = false
 		$BuildAreaLayer.visible = false
 		$UserLayer.visible = false
-	$StepTimer.start()
+	playing = true
+	start_time = Time.get_ticks_usec()
 	$UiSfxPlayer.stream = PLAY_SOUND
 	$UiSfxPlayer.play()
 
 func pause() -> void:
-	if $StepTimer.is_stopped():
+	if not playing:
 		return
-	$StepTimer.stop()
+	playing = false
 	$UiSfxPlayer.stream = PAUSE_SOUND
 	$UiSfxPlayer.play()
 
@@ -168,7 +171,6 @@ var arrows: Array[Arrow] = []
 
 # Called when the node enters the scene tree for the first time
 func _ready() -> void:
-	$StepTimer.wait_time = step_time
 	restart(true)
 
 
@@ -342,6 +344,7 @@ func _on_level_select_in_menu(scene_index: int) -> void:
 	update_level(scene_index - current_level)
 
 func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
+	playing = false
 	goal_reached = false
 	game_over = false
 	editable = true
@@ -364,7 +367,6 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 	for cell in level_layer.get_used_cells():
 		var atlas_coords: Vector2i = level_layer.get_cell_atlas_coords(cell)
 		var block_rotation: int = level_layer.get_cell_alternative_tile(cell)
-		print(atlas_coords)
 		var block := BLOCK_REGISTRY.get_block(atlas_coords)
 		if block.atlas_coords == Constants.ARROW:
 			arrows.push_back(Arrow.new(cell, block_rotation))
@@ -504,6 +506,10 @@ func _on_step_timer_timeout() -> void:
 
 
 func _process(delta: float) -> void:
+	var elapsed := Time.get_ticks_usec() - start_time
+	if playing and elapsed >= 1_000_000 * step_time:
+		_on_step_timer_timeout()
+		start_time = Time.get_ticks_usec()
 	process_mouse_edit()
 
 
@@ -524,10 +530,10 @@ func _unhandled_input(event: InputEvent) -> void:
 				toolbox.deselect()
 				
 	if event.is_action_pressed("PauseToggle"):
-		if $StepTimer.is_stopped():
-			play()
-		else:
+		if playing:
 			pause()
+		else:
+			play()
 	elif event.is_action_pressed("Clear"):
 		clear()
 	elif event.is_action_pressed("Restart"):

@@ -54,8 +54,3 @@ bus = &"SFX"
 
 [node name="UiSfxPlayer" type="AudioStreamPlayer" parent="." unique_id=154880403]
 bus = &"SFX"
-
-[node name="StepTimer" type="Timer" parent="." unique_id=102375159]
-wait_time = 0.2
-
-[connection signal="timeout" from="StepTimer" to="." method="_on_step_timer_timeout"]
