@@ -1,6 +1,8 @@
 extends Node2D
 
 
+const BLOCK_REGISTRY := preload("res://resources/block_registry.tres") as BlockRegistry
+
 const PLACE_BLOCK_SOUND = preload("res://audio/place_block.wav")
 const REMOVE_BLOCK_SOUND = preload("res://audio/remove_block.wav")
 const MOVE_SOUND = preload("res://audio/move.wav")
@@ -34,12 +36,16 @@ enum ActionType {
 
 func add_user_tiles() -> void:
 	for cell in $UserLayer.get_used_cells():
-		var cell_type: Vector2i = $UserLayer.get_cell_atlas_coords(cell)
-		match cell_type:
-			Constants.USER_WALL:
-				$ObstacleLayer.set_cell(cell, 0, cell_type)
-			_:
-				$LevelLayer.set_cell(cell, 0, cell_type)
+		var atlas_coords: Vector2i = $UserLayer.get_cell_atlas_coords(cell)
+		var block_rotation: int = $UserLayer.get_cell_alternative_tile(cell)
+		var block := BLOCK_REGISTRY.get_block(atlas_coords)
+		var layer: TileMapLayer
+		match block.type:
+			BlockResource.BlockType.OBSTACLE:
+				layer = $ObstacleLayer
+			BlockResource.BlockType.INTERACTABLE:
+				layer = $LevelLayer
+		layer.set_cell(cell, 0, block.atlas_coords, block_rotation)
 
 
 func remove_user_tiles() -> void:
@@ -175,7 +181,7 @@ func is_free(cell: Vector2i, desired_facing: int) -> bool:
 	# direction
 	var cell_facing = $ObstacleLayer.get_cell_alternative_tile(cell)
 	match cell_type:
-		Constants.ONE_WAY_WALL:
+		Constants.ONE_WAY_WALL, Constants.PLACEABLE_ONE_WAY_WALL:
 			return desired_facing == cell_facing
 		Constants.EMPTY:
 			return true
@@ -364,6 +370,7 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 	$ObstacleLayer.clear()
 	
 	var level = scene.instantiate()
+	level.init()
 	var build_area = level.get_node("BuildAreaLayer")
 	var level_layer = level.get_node("LevelLayer")
 	
@@ -375,7 +382,7 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 		var cell_type = level_layer.get_cell_atlas_coords(cell)
 		match cell_type:
 			# Obstacles go on the obstacle layer
-			Constants.WALL, Constants.ONE_WAY_WALL:
+			Constants.WALL, Constants.ONE_WAY_WALL, Constants.PLACEABLE_ONE_WAY_WALL:
 				copy_cell(cell, level_layer, $ObstacleLayer)
 			# Add arrows from the start node
 			Constants.START:
@@ -386,7 +393,7 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 
 	if first_load:
 		$UserLayer.clear()
-		toolbox.init(level.placeable_blocks)
+		toolbox.init(level.block_counts)
 		# This has to be set after cells are copied so the center is correctly
 		# calculated
 		set_camera_position()
@@ -445,8 +452,7 @@ func render_ghost_block(cell: Vector2i) -> void:
 	var selected = toolbox.selected_block
 	if selected == null or not toolbox.has_remaining(selected):
 		return
-	var atlas_coords = Level.get_block_atlas_coords(selected)
-	$GhostUserLayer.set_cell(cell, 0, atlas_coords)	
+	$GhostUserLayer.set_cell(cell, 0, selected.atlas_coords, toolbox.block_rotation)
 
 
 func _on_step_timer_timeout() -> void:
@@ -549,6 +555,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_released("PlaceBlock") \
 		or event.is_action_released("DeleteBlock"):
 		action = ActionType.NONE
+	elif event.is_action_pressed("RotateBlockCW"):
+		toolbox.rotate_block(1)
+	elif event.is_action_pressed("RotateBlockCCW"):
+		toolbox.rotate_block(-1)
 
 
 func can_place_block(cell: Vector2i):
@@ -568,19 +578,18 @@ func place_block(cell: Vector2i) -> bool:
 	if selected == null or not toolbox.has_remaining(selected):
 		return false
 
-	var atlas_coords = Level.get_block_atlas_coords(selected)
 	var existing_atlas_coords = $UserLayer.get_cell_atlas_coords(cell)
-
 	if existing_atlas_coords != Constants.EMPTY:
 		# Only look up the block once we know the cell isn't empty
-		var existing_block = Level.get_placeable_block(existing_atlas_coords)
+		var existing_block = BLOCK_REGISTRY.get_block(existing_atlas_coords)
+		var existing_rotation = $UserLayer.get_cell_alternative_tile(cell)
 		# Do not replace with the same block as useless
-		if existing_block == selected:
+		if existing_block == selected and existing_rotation == toolbox.block_rotation:
 			return false
 		# Put back the existing block when replacing it
 		toolbox.change_count(existing_block, 1)
 
-	$UserLayer.set_cell(cell, 0, atlas_coords)
+	$UserLayer.set_cell(cell, 0, selected.atlas_coords, toolbox.block_rotation)
 	toolbox.change_count(selected, -1)
 	return true
 	
@@ -589,7 +598,7 @@ func delete_block(cell: Vector2i) -> bool:
 	var atlas_coords = $UserLayer.get_cell_atlas_coords(cell)
 	if atlas_coords == Constants.EMPTY:
 		return false
-	var placeable_block = Level.get_placeable_block(atlas_coords)
+	var placeable_block = BLOCK_REGISTRY.get_block(atlas_coords)
 	$UserLayer.erase_cell(cell)
 	toolbox.change_count(placeable_block, 1)
 	return true

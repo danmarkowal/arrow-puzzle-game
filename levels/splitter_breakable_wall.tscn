@@ -2,7 +2,10 @@
 
 [ext_resource type="TileSet" uid="uid://8caent6sdiiw" path="res://resources/maze_tile_set.tres" id="1_3hls8"]
 [ext_resource type="Texture2D" uid="uid://glti0m8xgc0v" path="res://textures/cells.png" id="1_gew73"]
+[ext_resource type="Script" uid="uid://co5pjp1s1d23k" path="res://resources/block_resource.gd" id="2_55eyg"]
 [ext_resource type="Script" uid="uid://cloq8scl3f845" path="res://scripts/level.gd" id="2_hbghi"]
+[ext_resource type="Resource" uid="uid://b4bi5okr0k5db" path="res://resources/blocks/splitter.tres" id="3_mr5e2"]
+[ext_resource type="Resource" uid="uid://668ilnuo8dvi" path="res://resources/blocks/placeable_wall.tres" id="4_x76se"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bmgug"]
 texture = ExtResource("1_gew73")
@@ -16,9 +19,9 @@ sources/1 = SubResource("TileSetAtlasSource_bmgug")
 
 [node name="Level" type="Node2D" unique_id=743590558]
 script = ExtResource("2_hbghi")
-placeable_blocks = Dictionary[int, int]({
-0: 10,
-1: 1
+block_counts = Dictionary[ExtResource("2_55eyg"), int]({
+ExtResource("3_mr5e2"): 1,
+ExtResource("4_x76se"): 5
 })
 notes = "Here we introduce the breakable block, an obstacle the player has to destroy by using the splitter."
 

@@ -28,7 +28,7 @@ func _process(delta: float) -> void:
 	var x = target - offset_transform_scale.x
 	var f = k * x
 	var a = f / m
-	v *= damping
+	v *= pow(damping, delta * 60.0)
 	v += a * delta
 	offset_transform_scale.x += v * delta
 	offset_transform_scale.y += v * delta

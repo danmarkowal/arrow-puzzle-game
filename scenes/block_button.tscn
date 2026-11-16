@@ -2,6 +2,27 @@
 
 [ext_resource type="Script" uid="uid://uu5bp2o0qq23" path="res://scripts/block_button.gd" id="1_wl4ag"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fyr43"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wl4ag"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.4, 0.4, 0.4, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_pj3q8"]
 load_path = "res://.godot/imported/cells.png-5063d6a1bcf2391560f5420d654cbf33.ctex"
 
@@ -10,17 +31,28 @@ atlas = SubResource("CompressedTexture2D_pj3q8")
 region = Rect2(0, 0, 32, 32)
 
 [node name="BlockButton" type="Button" unique_id=1770184773]
+offset_right = 40.0
+offset_bottom = 40.0
 focus_mode = 0
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_styles/pressed = SubResource("StyleBoxFlat_fyr43")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_wl4ag")
 icon = SubResource("AtlasTexture_cfiec")
 script = ExtResource("1_wl4ag")
-block_type = null
 
 [node name="CountLabel" type="RichTextLabel" parent="." unique_id=192759511]
-layout_mode = 0
-offset_top = 31.0
-offset_right = 43.0
-offset_bottom = 47.0
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -39.0
+offset_top = -9.0
+offset_right = 4.0
+offset_bottom = 7.0
+grow_horizontal = 0
+grow_vertical = 0
 text = "x0"
 fit_content = true
 scroll_active = false

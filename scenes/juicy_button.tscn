@@ -12,6 +12,8 @@ offset_transform_enabled = true
 focus_mode = 0
 icon = SubResource("AtlasTexture_0xm2m")
 script = ExtResource("2_87skf")
+k = 100.0
+damping = 0.8
 
 [node name="SfxPlayer" type="AudioStreamPlayer" parent="." unique_id=1862469481]
 volume_db = -3.0
