@@ -3,6 +3,7 @@
 [ext_resource type="TileSet" uid="uid://8caent6sdiiw" path="res://resources/maze_tile_set.tres" id="1_823pn"]
 [ext_resource type="Texture2D" uid="uid://glti0m8xgc0v" path="res://textures/cells.png" id="1_iss0w"]
 [ext_resource type="Script" uid="uid://cloq8scl3f845" path="res://scripts/level.gd" id="2_iss0w"]
+[ext_resource type="PackedScene" uid="uid://bbxpxfyfyekmx" path="res://levels/leveldata/level_data.tscn" id="4_vsmuf"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yi3jx"]
 texture = ExtResource("1_iss0w")
@@ -29,3 +30,5 @@ tile_map_data = PackedByteArray("AAABAAQAAAACAAIAAAAAAAAAAAACAAAAAAAAAAEAAAACAAA
 tile_set = ExtResource("1_823pn")
 rendering_quadrant_size = 32
 script = ExtResource("2_iss0w")
+
+[node name="LevelData" parent="LevelLayer" unique_id=1813487893 instance=ExtResource("4_vsmuf")]

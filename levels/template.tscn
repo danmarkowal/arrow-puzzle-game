@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://glti0m8xgc0v" path="res://textures/cells.png" id="1_uho38"]
 [ext_resource type="TileSet" uid="uid://8caent6sdiiw" path="res://resources/maze_tile_set.tres" id="2_ua8a3"]
 [ext_resource type="Script" uid="uid://cloq8scl3f845" path="res://scripts/level.gd" id="3_1t8dn"]
-[ext_resource type="PackedScene" uid="uid://bbxpxfyfyekmx" path="res://levels/level_data.tscn" id="4_ua8a3"]
+[ext_resource type="PackedScene" uid="uid://bbxpxfyfyekmx" path="res://levels/leveldata/level_data.tscn" id="4_ua8a3"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6op4b"]
 texture = ExtResource("1_uho38")
