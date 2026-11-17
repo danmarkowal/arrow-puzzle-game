@@ -27,6 +27,8 @@ var editable: bool = true
 var steps: int = 0
 var action: ActionType = ActionType.NONE
 var start_time: int = 0
+var pause_menu: Control
+const PAUSE_MENU = preload("res://scenes/pause_menu.tscn")
 
 
 enum ActionType {
@@ -534,6 +536,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			pause()
 		else:
 			play()
+	elif event.is_action_pressed("PauseMenuToggle"):
+		_open_pause()
+		return
 	elif event.is_action_pressed("Clear"):
 		clear()
 	elif event.is_action_pressed("Restart"):
@@ -601,3 +606,16 @@ func delete_block(cell: Vector2i) -> bool:
 	$UserLayer.erase_cell(cell)
 	toolbox.change_count(placeable_block, 1)
 	return true
+
+func _open_pause() -> void:
+	pause_menu = PAUSE_MENU.instantiate()
+	ui_layer.add_child(pause_menu)
+	pause_menu.resumed.connect(_resume.bind())
+	get_tree().paused = true
+	get_viewport().set_input_as_handled()
+	
+func _resume() -> void:
+	pause_menu.queue_free()
+	pause_menu = null
+	get_tree().paused = false
+	
