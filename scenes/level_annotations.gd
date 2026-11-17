@@ -19,7 +19,7 @@ func _draw() -> void:
 		return
 	
 	var ANNOTATION_FONT: Font = ThemeDB.fallback_font
-	const ANNOTATION_SIZE: int = 10
+	const ANNOTATION_SIZE: int = 14
 	annotate_teleporters(layer, ANNOTATION_FONT, ANNOTATION_SIZE)
 	
 func annotate_teleporters(layer:TileMapLayer, font:Font, font_size:int) -> void:
