@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://dklmnu6mnxuvf" path="res://resources/level_list.gd" id="1_qtxsk"]
 [ext_resource type="PackedScene" uid="uid://dbeacd6qrccky" path="res://levels/movement_corner.tscn" id="2_fcvwk"]
 [ext_resource type="PackedScene" uid="uid://bkq673g71tgf6" path="res://levels/movement_back.tscn" id="3_2rdup"]
-[ext_resource type="PackedScene" uid="uid://brv5a5fsrylse" path="res://levels/placable_wall_intro.tscn" id="4_yxkpx"]
+[ext_resource type="PackedScene" uid="uid://brv5a5fsrylse" path="res://levels/placeable_wall_intro.tscn" id="4_yxkpx"]
 [ext_resource type="PackedScene" uid="uid://c8s1b14gwdu3t" path="res://levels/block_beam_with_wall.tscn" id="5_fcvwk"]
 [ext_resource type="PackedScene" uid="uid://clp1pf8aqrns7" path="res://levels/splitter_showcase.tscn" id="5_tolgq"]
 [ext_resource type="PackedScene" uid="uid://dxjvnei7cfk5x" path="res://levels/splitter_horizontal.tscn" id="6_5o8pe"]
@@ -13,8 +13,9 @@
 [ext_resource type="PackedScene" uid="uid://btgq58w8jme81" path="res://levels/multiple_beams.tscn" id="8_3lelk"]
 [ext_resource type="PackedScene" uid="uid://bnd7asapec2p5" path="res://levels/one_way_wall_intro.tscn" id="10_2rdup"]
 [ext_resource type="PackedScene" uid="uid://cy0oxofu0y5g3" path="res://levels/test.tscn" id="12_tolgq"]
+[ext_resource type="PackedScene" uid="uid://bho3oogew10pe" path="res://levels/teleporter_test.tscn" id="13_5o8pe"]
 
 [resource]
 script = ExtResource("1_qtxsk")
-levels = Array[PackedScene]([ExtResource("1_qs11q"), ExtResource("2_fcvwk"), ExtResource("3_2rdup"), ExtResource("4_yxkpx"), ExtResource("5_fcvwk"), ExtResource("5_tolgq"), ExtResource("6_5o8pe"), ExtResource("7_yxkpx"), ExtResource("7_rq5tk"), ExtResource("8_3lelk"), ExtResource("10_2rdup"), ExtResource("12_tolgq")])
+levels = Array[PackedScene]([ExtResource("1_qs11q"), ExtResource("2_fcvwk"), ExtResource("3_2rdup"), ExtResource("4_yxkpx"), ExtResource("5_fcvwk"), ExtResource("5_tolgq"), ExtResource("6_5o8pe"), ExtResource("7_yxkpx"), ExtResource("7_rq5tk"), ExtResource("8_3lelk"), ExtResource("10_2rdup"), ExtResource("12_tolgq"), ExtResource("13_5o8pe")])
 metadata/_custom_type_script = "uid://dklmnu6mnxuvf"
