@@ -1,0 +1,117 @@
+[gd_scene format=3 uid="uid://dtisaphv41s0o"]
+
+[ext_resource type="Script" uid="uid://bjci56gh7ug56" path="res://scripts/start_menu.gd" id="1_ouf4f"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ntegx"]
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ouf4f"]
+bg_color = Color(0.098098494, 0.098098524, 0.098098464, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uojun"]
+bg_color = Color(0.3779188, 0.3779189, 0.37791875, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[node name="StartMenu" type="Control" unique_id=482898431]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ouf4f")
+
+[node name="Label" type="Label" parent="." unique_id=991949633]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -555.625
+offset_top = 20.0
+offset_right = 555.625
+offset_bottom = 127.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 64
+text = "Welcome to the Arrow Puzzle Game"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Container" type="VBoxContainer" parent="." unique_id=1679647075]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -229.25
+offset_top = -121.0
+offset_right = 229.25
+offset_bottom = 121.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Play" type="Button" parent="Container" unique_id=857721088]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 52
+theme_override_styles/normal = SubResource("StyleBoxFlat_ntegx")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ouf4f")
+theme_override_styles/hover = SubResource("StyleBoxFlat_uojun")
+text = "Play"
+
+[node name="Options" type="Button" parent="Container" unique_id=2103000277]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 52
+theme_override_styles/normal = SubResource("StyleBoxFlat_ntegx")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ouf4f")
+theme_override_styles/hover = SubResource("StyleBoxFlat_uojun")
+text = "Options"
+
+[node name="Credits" type="Button" parent="Container" unique_id=1558123593]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 52
+theme_override_styles/normal = SubResource("StyleBoxFlat_ntegx")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ouf4f")
+theme_override_styles/hover = SubResource("StyleBoxFlat_uojun")
+text = "Credits"
+
+[node name="Exit" type="Button" parent="Container" unique_id=455894803]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 52
+theme_override_styles/normal = SubResource("StyleBoxFlat_ntegx")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ouf4f")
+theme_override_styles/hover = SubResource("StyleBoxFlat_uojun")
+text = "Exit"
+
+[connection signal="pressed" from="Container/Play" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="Container/Options" to="." method="_on_options_button_pressed"]
+[connection signal="pressed" from="Container/Credits" to="." method="_on_credits_pressed"]
+[connection signal="pressed" from="Container/Exit" to="." method="_on_exit_button_pressed"]

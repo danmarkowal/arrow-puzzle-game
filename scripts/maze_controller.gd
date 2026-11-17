@@ -1,19 +1,36 @@
 extends Node2D
 
 
+const BLOCK_REGISTRY := preload("res://resources/block_registry.tres") as BlockRegistry
+
+const PLACE_BLOCK_SOUND = preload("res://audio/place_block.wav")
+const REMOVE_BLOCK_SOUND = preload("res://audio/remove_block.wav")
+const MOVE_SOUND = preload("res://audio/move.wav")
+const PLAY_SOUND = preload("res://audio/play.wav")
+const PAUSE_SOUND = preload("res://audio/pause.wav")
+const RESTART_SOUND = preload("res://audio/restart.wav")
+const CLEAR_SOUND = preload("res://audio/clear.wav")
+
+
 @export var current_level: int = 0
 @export var step_time: float = 0.2
-@export var level_scenes: Array[PackedScene]
+@export var level_list: LevelList
 @export var toolbox: Toolbox
 @export var stats: Stats
-@export var camera: Camera2D
+@export var camera: InputCam
+@export var ui_layer: CanvasLayer
 
+
+var playing: bool = false
 var goal_reached: bool = false
 var game_over: bool = false
 var editable: bool = true
 var steps: int = 0
 var action: ActionType = ActionType.NONE
 var level_cell_data: Dictionary[Vector2i, BlockData]
+var start_time: int = 0
+var pause_menu: Control
+const PAUSE_MENU = preload("res://scenes/pause_menu.tscn")
 
 
 enum ActionType {
@@ -25,56 +42,72 @@ enum ActionType {
 
 func add_user_tiles() -> void:
 	for cell in $UserLayer.get_used_cells():
-		var cell_type: Vector2i = $UserLayer.get_cell_atlas_coords(cell)
-		match cell_type:
-			Constants.USER_WALL:
-				$ObstacleLayer.set_cell(cell, 0, cell_type)
-			_:
-				$LevelLayer.set_cell(cell, 0, cell_type)
-
-
-func remove_user_tiles() -> void:
-	for cell in $UserLayer.get_used_cells():
-		$LevelLayer.erase_cell(cell)
-		$ObstacleLayer.erase_cell(cell)
+		var atlas_coords: Vector2i = $UserLayer.get_cell_atlas_coords(cell)
+		var block_rotation: int = $UserLayer.get_cell_alternative_tile(cell)
+		var block := BLOCK_REGISTRY.get_block(atlas_coords)
+		if block.atlas_coords == Constants.ARROW:
+			arrows.push_back(Arrow.new(cell, block_rotation))
+			continue
+		var layer: TileMapLayer
+		match block.type:
+			BlockResource.BlockType.OBSTACLE:
+				layer = $ObstacleLayer
+			BlockResource.BlockType.INTERACTABLE:
+				layer = $LevelLayer
+		layer.set_cell(cell, 0, block.atlas_coords, block_rotation)
+	redraw_arrows()
 
 
 func play() -> void:
-	if not $StepTimer.is_stopped() or goal_reached or game_over:
+	if playing or goal_reached or game_over:
 		return
-	editable = false
-	add_user_tiles()
-	$BuildAreaLayer.visible = false
-	$UserLayer.visible = false
-	$StepTimer.start()
-
+	# Only add the user tiles once, when the user first presses play without a reset
+	if editable:
+		add_user_tiles()
+		editable = false
+		$BuildAreaLayer.visible = false
+		$UserLayer.visible = false
+	playing = true
+	start_time = Time.get_ticks_usec()
+	$UiSfxPlayer.stream = PLAY_SOUND
+	$UiSfxPlayer.play()
 
 func pause() -> void:
-	if $StepTimer.is_stopped():
+	if not playing:
 		return
-	remove_user_tiles()
-	$UserLayer.visible = true
-	$StepTimer.stop()
+	playing = false
+	$UiSfxPlayer.stream = PAUSE_SOUND
+	$UiSfxPlayer.play()
+
 
 
 func restart(first_load: bool) -> void:
-	if level_scenes.is_empty():
+	if level_list.levels.is_empty():
 		push_warning("No level scenes assigned.")
 		return
-	load_level_from_scene(level_scenes[current_level], first_load)
+	if not first_load and editable:
+		# No need to restart in this case
+		return
+	load_level_from_scene(level_list.levels[current_level], first_load)
+	if not first_load:
+		$UiSfxPlayer.stream = RESTART_SOUND
+		$UiSfxPlayer.play()
 
 
 func clear() -> void:
-	if not editable:
+	# Can't clear or nothing to clear 
+	if not editable or $UserLayer.get_used_cells().size() == 0:
 		return
 	$UserLayer.clear()
 	toolbox.reset()
+	$UiSfxPlayer.stream = CLEAR_SOUND
+	$UiSfxPlayer.play()
 
 
 func update_level(offset: int) -> void:
 	if current_level + offset < 0:
 		return
-	if current_level + offset >= len(level_scenes):
+	if current_level + offset >= len(level_list.levels):
 		print("Well done! All levels completed!")
 		pause()
 		return
@@ -142,7 +175,6 @@ var arrows: Array[Arrow] = []
 
 # Called when the node enters the scene tree for the first time
 func _ready() -> void:
-	$StepTimer.wait_time = step_time
 	restart(true)
 
 
@@ -153,7 +185,7 @@ func is_free(cell: Vector2i, desired_facing: int) -> bool:
 	# direction
 	var cell_facing = $ObstacleLayer.get_cell_alternative_tile(cell)
 	match cell_type:
-		Constants.ONE_WAY_WALL:
+		Constants.ONE_WAY_WALL, Constants.PLACEABLE_ONE_WAY_WALL:
 			return desired_facing == cell_facing
 		Constants.EMPTY:
 			return true
@@ -171,23 +203,11 @@ func kill_arrow(arrow: Arrow) -> void:
 var arrow_art_facing: int = Constants.NORTH
 
 
-# Tile transform flags that rotate the arrow artwork to point along `facing`
-func facing_to_tile_alternative(facing: int) -> int:
-	var quarter_turns = posmod(facing - arrow_art_facing, 4)
-	if quarter_turns == 1: # 90 degrees clockwise
-		return TileSetAtlasSource.TRANSFORM_TRANSPOSE | TileSetAtlasSource.TRANSFORM_FLIP_H
-	elif quarter_turns == 2: # 180 degrees
-		return TileSetAtlasSource.TRANSFORM_FLIP_H | TileSetAtlasSource.TRANSFORM_FLIP_V
-	elif quarter_turns == 3: # 90 degrees counter-clockwise
-		return TileSetAtlasSource.TRANSFORM_TRANSPOSE | TileSetAtlasSource.TRANSFORM_FLIP_V
-	return 0
-
-
 func redraw_arrows() -> void:
 	# Redrawing from the arrow list avoids erasing a tile another arrow is on
 	$ArrowLayer.clear()
 	for arrow in arrows:
-		$ArrowLayer.set_cell(arrow.position, 0, Constants.ARROW, facing_to_tile_alternative(arrow.facing))
+		$ArrowLayer.set_cell(arrow.position, 0, Constants.ARROW, arrow.facing)
 
 
 # Decide facing and destination for this tick. Does not move the arrow yet,
@@ -396,11 +416,12 @@ func process_interactions(list: Array[Arrow], is_chain: bool, chain_fired: Dicti
 	return spawn
 
 func _on_level_select_in_menu(scene_index: int) -> void:
-	if scene_index >= level_scenes.size(): return
+	if scene_index >= level_list.levels.size(): return
 
 	update_level(scene_index - current_level)
 
 func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
+	playing = false
 	goal_reached = false
 	game_over = false
 	editable = true
@@ -408,37 +429,41 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 	pause()
 
 	arrows.clear()
-	$BuildAreaLayer.clear()
 	$BuildAreaLayer.visible = true
+	$UserLayer.visible = true
 	$ArrowLayer.clear()
 	$LevelLayer.clear()
 	$ObstacleLayer.clear()
 
 	var level = scene.instantiate()
+	level.init()
 	var build_area = level.get_node("BuildAreaLayer")
 	var level_layer = level.get_node("LevelLayer")
 	var level_data = level_layer.get_node("LevelData")
 
-	for cell in build_area.get_used_cells():
-		$BuildAreaLayer.set_cell(cell, 0, Constants.BUILD_AREA)
-
 	# Move cells from level into different layers
 	for cell in level_layer.get_used_cells():
-		var cell_type = level_layer.get_cell_atlas_coords(cell)
-		match cell_type:
-			# Obstacles go on the obstacle layer
-			Constants.WALL, Constants.ONE_WAY_WALL:
-				copy_cell(cell, level_layer, $ObstacleLayer)
-			# Add arrows from the start node
-			Constants.START:
-				arrows.push_back(Arrow.new(cell))
-			# Interactables go on the level layer
-			_:
-				copy_cell(cell, level_layer, $LevelLayer)
+		var atlas_coords: Vector2i = level_layer.get_cell_atlas_coords(cell)
+		var block_rotation: int = level_layer.get_cell_alternative_tile(cell)
+		var block := BLOCK_REGISTRY.get_block(atlas_coords)
+		if block.atlas_coords == Constants.ARROW:
+			arrows.push_back(Arrow.new(cell, block_rotation))
+			continue
+		var layer: TileMapLayer
+		match block.type:
+			BlockResource.BlockType.OBSTACLE:
+				layer = $ObstacleLayer
+			BlockResource.BlockType.INTERACTABLE:
+				layer = $LevelLayer
+		layer.set_cell(cell, 0, block.atlas_coords, block_rotation)
 
 	if first_load:
+		# Only clear the user layer if we are starting a fresh level
 		$UserLayer.clear()
-		toolbox.init(level.placeable_blocks)
+		$BuildAreaLayer.clear()
+		for cell in build_area.get_used_cells():
+			$BuildAreaLayer.set_cell(cell, 0, Constants.BUILD_AREA)
+		toolbox.init(level.block_counts)
 		# This has to be set after cells are copied so the center is correctly
 		# calculated
 		set_camera_position()
@@ -472,7 +497,7 @@ func set_camera_position() -> void:
 		var top_left = $ObstacleLayer.map_to_local(used_rect.position)
 		var bottom_right = $ObstacleLayer.map_to_local(used_rect.end - Vector2i.ONE)
 		var center = (top_left + bottom_right) / 2
-		camera.global_position = $ObstacleLayer.to_global(center)
+		camera.set_camera($ObstacleLayer.to_global(center))
 
 
 func copy_cell(cell: Vector2i, from: TileMapLayer, to: TileMapLayer) -> void:
@@ -483,15 +508,31 @@ func copy_cell(cell: Vector2i, from: TileMapLayer, to: TileMapLayer) -> void:
 
 
 func process_mouse_edit() -> void:
+	$GhostUserLayer.clear()
+	$GhostUserLayer.visible = !camera.is_dragging()
 	if not editable:
 		return
 	var cell = $UserLayer.local_to_map($UserLayer.get_local_mouse_position())
+	if action != ActionType.DELETE_BLOCK and can_place_block(cell):
+		render_ghost_block(cell)
 	match action:
 		ActionType.PLACE_BLOCK:
-			if can_place_block(cell):
-				place_block(cell)
+			if can_place_block(cell) and place_block(cell):
+				$EditorSfxPlayer.stream = PLACE_BLOCK_SOUND
+				$EditorSfxPlayer.pitch_scale = 1.0 + randf_range(0.0, 0.1)
+				$EditorSfxPlayer.play()
 		ActionType.DELETE_BLOCK:
-			delete_block(cell)
+			if delete_block(cell):
+				$EditorSfxPlayer.stream = REMOVE_BLOCK_SOUND
+				$EditorSfxPlayer.pitch_scale = 1.0 + randf_range(0.0, 0.1)
+				$EditorSfxPlayer.play()
+
+
+func render_ghost_block(cell: Vector2i) -> void:
+	var selected = toolbox.selected_block
+	if selected == null or not toolbox.has_remaining(selected):
+		return
+	$GhostUserLayer.set_cell(cell, 0, selected.atlas_coords, toolbox.block_rotation)
 
 
 func _on_step_timer_timeout() -> void:
@@ -539,35 +580,50 @@ func _on_step_timer_timeout() -> void:
 	# Win/lose is decided once per tick, so order of arrows doesn't matter.
 	if goal_reached:
 		print("GOAL!")
-		next_level()
+		goal_reached = true
+		pause()
 	elif arrows.is_empty():
 		print("Game over!")
 		game_over = true
 		pause()
+		
+	if not game_over:
+		$LevelSfxPlayer.stream = MOVE_SOUND
+		$LevelSfxPlayer.play()
 
 
 func _process(delta: float) -> void:
+	var elapsed := Time.get_ticks_usec() - start_time
+	if playing and elapsed >= 1_000_000 * step_time:
+		_on_step_timer_timeout()
+		start_time = Time.get_ticks_usec()
 	process_mouse_edit()
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	# TODO: Fix wrong item being selected sometimes
 	if event is InputEventKey and editable \
 		and event.pressed and not event.echo \
 		and event.keycode >= KEY_0 and event.keycode <= KEY_9:
-		var buttons = toolbox.button_group.get_buttons()
+		var buttons = toolbox.get_buttons()
 		var index = event.keycode - KEY_1
 		if event.keycode == KEY_0:
 			index = 9
 		if index >= 0 and index < buttons.size():
-			buttons[index].button_pressed = true
-			buttons[index].pressed.emit()
+			var currently_pressed = buttons[index].button_pressed
+			buttons[index].button_pressed = not currently_pressed
+			if buttons[index].button_pressed:
+				buttons[index].pressed.emit()
+			else:
+				toolbox.deselect()
 
 	if event.is_action_pressed("PauseToggle"):
-		if $StepTimer.is_stopped():
-			play()
-		else:
+		if playing:
 			pause()
+		else:
+			play()
+	elif event.is_action_pressed("PauseMenuToggle"):
+		_open_pause()
+		return
 	elif event.is_action_pressed("Clear"):
 		clear()
 	elif event.is_action_pressed("Restart"):
@@ -579,13 +635,20 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("LevelSelectMenuToggle"):
 		var level_menu = get_parent().get_node("CanvasLayer/GUI/LevelMenu")
 		level_menu.toggle_visibility()
-	elif event.is_action_pressed("PlaceBlock") and editable:
+	elif event.is_action_pressed("PlaceBlock") and \
+	 not camera.is_dragging() and editable:
 		action = ActionType.PLACE_BLOCK
 	elif event.is_action_pressed("DeleteBlock") and editable:
 		action = ActionType.DELETE_BLOCK
 	elif event.is_action_released("PlaceBlock") \
-		or event.is_action_released("DeleteBlock"):
+		or event.is_action_released("DeleteBlock") \
+		or camera.is_dragging():
 		action = ActionType.NONE
+	elif event.is_action_pressed("RotateBlockCW"):
+		toolbox.rotate_block(1)
+	elif event.is_action_pressed("RotateBlockCCW"):
+		toolbox.rotate_block(-1)
+
 
 func can_place_block(cell: Vector2i):
 	# Player can only place blocks in the buildable area
@@ -599,31 +662,45 @@ func can_place_block(cell: Vector2i):
 	return true
 
 
-func place_block(cell: Vector2i) -> void:
+func place_block(cell: Vector2i) -> bool:
 	var selected = toolbox.selected_block
 	if selected == null or not toolbox.has_remaining(selected):
-		return
+		return false
 
-	var atlas_coords = Level.get_block_atlas_coords(selected)
 	var existing_atlas_coords = $UserLayer.get_cell_atlas_coords(cell)
-
 	if existing_atlas_coords != Constants.EMPTY:
 		# Only look up the block once we know the cell isn't empty
-		var existing_block = Level.get_placeable_block(existing_atlas_coords)
+		var existing_block = BLOCK_REGISTRY.get_block(existing_atlas_coords)
+		var existing_rotation = $UserLayer.get_cell_alternative_tile(cell)
 		# Do not replace with the same block as useless
-		if existing_block == selected:
-			return
+		if existing_block == selected and existing_rotation == toolbox.block_rotation:
+			return false
 		# Put back the existing block when replacing it
 		toolbox.change_count(existing_block, 1)
 
-	$UserLayer.set_cell(cell, 0, atlas_coords)
+	$UserLayer.set_cell(cell, 0, selected.atlas_coords, toolbox.block_rotation)
 	toolbox.change_count(selected, -1)
+	return true
 
 
-func delete_block(cell: Vector2i):
+func delete_block(cell: Vector2i) -> bool:
 	var atlas_coords = $UserLayer.get_cell_atlas_coords(cell)
 	if atlas_coords == Constants.EMPTY:
-		return
-	var placeable_block = Level.get_placeable_block(atlas_coords)
+		return false
+	var placeable_block = BLOCK_REGISTRY.get_block(atlas_coords)
 	$UserLayer.erase_cell(cell)
 	toolbox.change_count(placeable_block, 1)
+	return true
+
+func _open_pause() -> void:
+	pause_menu = PAUSE_MENU.instantiate()
+	ui_layer.add_child(pause_menu)
+	pause_menu.resumed.connect(_resume.bind())
+	get_tree().paused = true
+	get_viewport().set_input_as_handled()
+	
+func _resume() -> void:
+	pause_menu.queue_free()
+	pause_menu = null
+	get_tree().paused = false
+	

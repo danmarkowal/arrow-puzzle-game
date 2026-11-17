@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="BlockRegistry" format=3 uid="uid://bluw65ul1f6q1"]
+
+[ext_resource type="Script" uid="uid://co5pjp1s1d23k" path="res://resources/block_resource.gd" id="1_b5i5q"]
+[ext_resource type="Script" uid="uid://j20w73v04tkf" path="res://resources/block_registry.gd" id="2_eij13"]
+[ext_resource type="Resource" uid="uid://ec0gtnsgp1so" path="res://resources/blocks/arrow.tres" id="2_kgppn"]
+[ext_resource type="Resource" uid="uid://co1w4k7ugfan0" path="res://resources/blocks/breakable_wall.tres" id="3_kv5i2"]
+[ext_resource type="Resource" uid="uid://82dr1mk7ct6u" path="res://resources/blocks/button.tres" id="4_y5gds"]
+[ext_resource type="Resource" uid="uid://d0aqam2n1gjhn" path="res://resources/blocks/destroyer.tres" id="5_x0pwm"]
+[ext_resource type="Resource" uid="uid://4jr35640yq51" path="res://resources/blocks/one_way_wall.tres" id="6_3qg83"]
+[ext_resource type="Resource" uid="uid://bibv1umpk81gg" path="res://resources/blocks/placeable_one_way_wall.tres" id="7_gs2ar"]
+[ext_resource type="Resource" uid="uid://668ilnuo8dvi" path="res://resources/blocks/placeable_wall.tres" id="8_ttect"]
+[ext_resource type="Resource" uid="uid://b4bi5okr0k5db" path="res://resources/blocks/splitter.tres" id="9_vovpw"]
+[ext_resource type="Resource" uid="uid://dubxxabd65x6s" path="res://resources/blocks/wall.tres" id="10_8a7dj"]
+[ext_resource type="Resource" uid="uid://1281t43ynnkm" path="res://resources/blocks/goal.tres" id="11_nmxxq"]
+
+[resource]
+script = ExtResource("2_eij13")
+blocks = Array[ExtResource("1_b5i5q")]([ExtResource("2_kgppn"), ExtResource("3_kv5i2"), ExtResource("4_y5gds"), ExtResource("5_x0pwm"), ExtResource("6_3qg83"), ExtResource("7_gs2ar"), ExtResource("8_ttect"), ExtResource("9_vovpw"), ExtResource("10_8a7dj"), ExtResource("11_nmxxq")])
+metadata/_custom_type_script = "uid://j20w73v04tkf"

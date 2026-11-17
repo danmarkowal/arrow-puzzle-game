@@ -29,12 +29,12 @@ rendering_quadrant_size = 32
 [node name="LevelAnnotations" type="Node2D" parent="LevelLayer" unique_id=172682916]
 script = ExtResource("4_q28i6")
 
-[node name="UserLayer" type="TileMapLayer" parent="." unique_id=285707901]
+[node name="ArrowLayer" type="TileMapLayer" parent="." unique_id=440632675]
 texture_filter = 1
 tile_set = ExtResource("3_yohnu")
 rendering_quadrant_size = 32
 
-[node name="ArrowLayer" type="TileMapLayer" parent="." unique_id=440632675]
+[node name="UserLayer" type="TileMapLayer" parent="." unique_id=285707901]
 texture_filter = 1
 tile_set = ExtResource("3_yohnu")
 rendering_quadrant_size = 32
@@ -44,7 +44,17 @@ texture_filter = 1
 tile_set = ExtResource("3_yohnu")
 rendering_quadrant_size = 32
 
-[node name="StepTimer" type="Timer" parent="." unique_id=102375159]
-wait_time = 0.2
+[node name="GhostUserLayer" type="TileMapLayer" parent="." unique_id=180754355]
+modulate = Color(1, 1, 1, 0.49019608)
+texture_filter = 1
+tile_set = ExtResource("3_yohnu")
+rendering_quadrant_size = 32
 
-[connection signal="timeout" from="StepTimer" to="." method="_on_step_timer_timeout"]
+[node name="EditorSfxPlayer" type="AudioStreamPlayer" parent="." unique_id=141324755]
+bus = &"SFX"
+
+[node name="LevelSfxPlayer" type="AudioStreamPlayer" parent="." unique_id=132921535]
+bus = &"SFX"
+
+[node name="UiSfxPlayer" type="AudioStreamPlayer" parent="." unique_id=154880403]
+bus = &"SFX"

@@ -2,8 +2,8 @@ extends PanelContainer
 
 signal level_chosen(scene_index: int)
 
-const LEVEL_COUNT = 6
 const MIN_CELL_SIZE = Vector2(55, 55)
+const LEVEL_LIST = preload("res://resources/main_level_list.tres")
 
 @onready var grid = $VBoxContainer/MarginContainer/GridContainer
 
@@ -11,7 +11,7 @@ const MIN_CELL_SIZE = Vector2(55, 55)
 func _ready() -> void:
 	toggle_visibility()
 	var original_width = $VBoxContainer.size.x
-	for i in range(LEVEL_COUNT):
+	for i in range(LEVEL_LIST.levels.size()):
 		var button := Button.new()
 		button.text = "Level " + str(i + 1)
 		button.custom_minimum_size = MIN_CELL_SIZE

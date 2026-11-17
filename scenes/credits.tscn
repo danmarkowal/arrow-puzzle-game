@@ -1,0 +1,129 @@
+[gd_scene format=3 uid="uid://bpqlvbnr2lq4"]
+
+[ext_resource type="Script" uid="uid://dqtf8mep0bnd2" path="res://scripts/credits.gd" id="1_0bpdh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0ctdu"]
+bg_color = Color(0.07450981, 0.09411765, 0.14901961, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yeqti"]
+content_margin_left = 60.0
+content_margin_top = 8.0
+content_margin_right = 60.0
+content_margin_bottom = 8.0
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0bpdh"]
+bg_color = Color(0.098098494, 0.098098524, 0.098098464, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ckv8"]
+bg_color = Color(0.3779188, 0.3779189, 0.37791875, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[node name="Credits" type="Control" unique_id=2061394717]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_0bpdh")
+
+[node name="Dim" type="ColorRect" parent="." unique_id=896498416]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.3)
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1201420946]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -275.0
+offset_right = 400.0
+offset_bottom = 275.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0ctdu")
+
+[node name="Label" type="Label" parent="." unique_id=430031875]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -322.5
+offset_top = -214.0
+offset_right = 322.5
+offset_bottom = 89.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 48
+text = "This game was developed by:
+
+Seif Ali Esmael
+Daniel Kowalczyk
+Andrii Halchuk
+Taiyo Brown"
+horizontal_alignment = 1
+
+[node name="Back" type="Button" parent="." unique_id=1072705852]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -58.5
+offset_top = 180.0
+offset_right = 58.5
+offset_bottom = 238.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 52
+theme_override_styles/normal = SubResource("StyleBoxFlat_yeqti")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_0bpdh")
+theme_override_styles/hover = SubResource("StyleBoxFlat_2ckv8")
+text = "Back"
+icon_alignment = 1
+
+[connection signal="pressed" from="Back" to="." method="_on_back_pressed"]

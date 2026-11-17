@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BlockResource" format=3 uid="uid://b4bi5okr0k5db"]
+
+[ext_resource type="Script" uid="uid://co5pjp1s1d23k" path="res://resources/block_resource.gd" id="1_6fkmv"]
+
+[resource]
+script = ExtResource("1_6fkmv")
+atlas_coords = Vector2i(1, 1)
+name = "Splitter"
+type = 1
+placeable = true
+metadata/_custom_type_script = "uid://co5pjp1s1d23k"

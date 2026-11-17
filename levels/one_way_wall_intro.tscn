@@ -1,0 +1,19 @@
+[gd_scene format=4 uid="uid://bnd7asapec2p5"]
+
+[ext_resource type="PackedScene" uid="uid://bsr5glx0iy7f8" path="res://levels/template.tscn" id="1_et67m"]
+[ext_resource type="Script" uid="uid://co5pjp1s1d23k" path="res://resources/block_resource.gd" id="2_o0xy2"]
+[ext_resource type="Resource" uid="uid://bibv1umpk81gg" path="res://resources/blocks/placeable_one_way_wall.tres" id="3_mtwht"]
+[ext_resource type="Resource" uid="uid://b4bi5okr0k5db" path="res://resources/blocks/splitter.tres" id="4_mtwht"]
+
+[node name="Level" unique_id=973170473 instance=ExtResource("1_et67m")]
+block_counts = Dictionary[ExtResource("2_o0xy2"), int]({
+ExtResource("3_mtwht"): 1,
+ExtResource("4_mtwht"): 1
+})
+notes = "Here the player is introduced to the one way wall block which allows an arrow to go through only when it matches the direction of the block."
+
+[node name="BuildAreaLayer" parent="." index="0" unique_id=1283605932]
+tile_map_data = PackedByteArray("AAAAAP//AQAEAAAAAAAAAP7/AQAEAAAAAAAAAP3/AQAEAAAAAAAAAPz/AQAEAAAAAAAAAPv/AQAEAAAAAAABAPv/AQAEAAAAAAACAPv/AQAEAAAAAAAAAPb/AQAEAAAAAAAAAPf/AQAEAAAAAAAAAPj/AQAEAAAAAAAAAPn/AQAEAAAAAAAAAPr/AQAEAAAAAAABAPj/AQAEAAAAAAACAPj/AQAEAAAAAAAAAAAAAQAEAAAAAAA=")
+
+[node name="LevelLayer" parent="." index="1" unique_id=1886682121]
+tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAD//wAAAAACAAAAAAD//wEAAAACAAAAAAAAAAEAAAACAAAAAAABAAEAAAACAAAAAAABAAAAAAACAAAAAAD/////AAACAAAAAAD///7/AAACAAAAAAD///3/AAACAAAAAAD///z/AAACAAAAAAD///r/AAACAAAAAAD///n/AAACAAAAAAD///j/AAACAAAAAAD///f/AAACAAAAAAD///b/AAACAAAAAAD///X/AAACAAAAAAABAP//AAACAAAAAAABAP7/AAACAAAAAAABAP3/AAACAAAAAAABAPz/AAACAAAAAAABAPn/AAACAAAAAAABAPf/AAACAAAAAAABAPb/AAACAAAAAAABAPX/AAACAAAAAAAAAPX/AAACAAAAAAABAPr/AAACAAAAAAACAPz/AAACAAAAAAACAPr/AAACAAAAAAD///v/AAACAAAAAAACAPf/AAACAAAAAAACAPn/AAACAAAAAAACAPX/AAACAAAAAAACAPb/AAACAAAAAAADAPn/AAACAAAAAAADAPr/AAACAAAAAAADAPf/AAACAAAAAAADAPb/AAACAAAAAAADAPX/AAACAAAAAAADAPz/AAACAAAAAAAFAPX/AAACAAAAAAAFAPb/AAABAAIAAAAFAPj/AAABAAAAAAAFAPz/AAACAAAAAAAGAPX/AAACAAAAAAAGAPb/AAACAAAAAAAGAPf/AAACAAAAAAAGAPj/AAACAAAAAAAGAPn/AAACAAAAAAAGAPr/AAACAAAAAAAGAPv/AAACAAAAAAAGAPz/AAACAAAAAAAEAPX/AAACAAAAAAAEAPb/AAACAAAAAAAEAPf/AAACAAAAAAAEAPn/AAACAAAAAAAEAPr/AAACAAAAAAAEAPz/AAACAAAAAAA=")
