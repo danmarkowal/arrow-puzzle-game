@@ -20,14 +20,19 @@ func _draw() -> void:
 	
 	var ANNOTATION_FONT: Font = ThemeDB.fallback_font
 	const ANNOTATION_SIZE: int = 10
+	annotate_teleporters(layer, ANNOTATION_FONT, ANNOTATION_SIZE)
 	
+func annotate_teleporters(layer:TileMapLayer, font:Font, font_size:int) -> void:
 	for coords in cell_data:
 		var data:BlockData = cell_data[coords]
 		if data.cell_type_id != Constants.TELEPORTER or data.interaction_tag < 1:
 			continue
 		
+		# Set colour
+		layer.set_cell(coords, 0, data.cell_type_id, data.interaction_tag - 1)
+		# Draw label
 		var center = layer.map_to_local(coords)
 		var x_pos = center[0] 
 		var y_pos = center[1] + (0.5 * Constants.CELL_SIZE)
-		draw_string(ANNOTATION_FONT, Vector2i(x_pos, y_pos), str(data.interaction_tag), HORIZONTAL_ALIGNMENT_CENTER, Constants.CELL_SIZE, ANNOTATION_SIZE, Color.WHITE)
+		draw_string(font, Vector2i(x_pos, y_pos), str(data.interaction_tag), HORIZONTAL_ALIGNMENT_CENTER, Constants.CELL_SIZE, font_size, Color.WHITE)
 	
