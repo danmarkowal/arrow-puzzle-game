@@ -80,4 +80,6 @@ func _on_block_selected(block: BlockResource) -> void:
 func rotate_block(direction: int) -> void:
 	if selected_block == null or not selected_block.rotatable:
 		return
-	block_rotation = (block_rotation + direction) % 4
+	block_rotation += direction
+	if block_rotation < 0: block_rotation = 3
+	block_rotation %= 4
