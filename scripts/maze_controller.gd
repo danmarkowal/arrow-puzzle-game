@@ -18,6 +18,7 @@ const CLEAR_SOUND = preload("res://audio/clear.wav")
 @export var toolbox: Toolbox
 @export var stats: Stats
 @export var camera: InputCam
+@export var ui_layer: CanvasLayer
 
 
 var playing: bool = false
