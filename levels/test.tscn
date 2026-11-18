@@ -6,13 +6,15 @@
 [ext_resource type="Resource" uid="uid://bibv1umpk81gg" path="res://resources/blocks/placeable_one_way_wall.tres" id="4_u45fp"]
 [ext_resource type="Resource" uid="uid://b4bi5okr0k5db" path="res://resources/blocks/splitter.tres" id="5_2grjb"]
 [ext_resource type="Resource" uid="uid://ec0gtnsgp1so" path="res://resources/blocks/arrow.tres" id="6_6g8e2"]
+[ext_resource type="Resource" uid="uid://c7r6b7fjt6ty1" path="res://resources/blocks/teleporter.tres" id="7_u45fp"]
 
 [node name="Level" unique_id=973170473 instance=ExtResource("1_errlg")]
 block_counts = Dictionary[ExtResource("2_pnvjf"), int]({
 ExtResource("3_6g8e2"): 100,
 ExtResource("4_u45fp"): 100,
 ExtResource("5_2grjb"): 100,
-ExtResource("6_6g8e2"): 100
+ExtResource("6_6g8e2"): 100,
+ExtResource("7_u45fp"): 2
 })
 notes = "This is a pseudo-level used for testing level ideas and blocks."
 

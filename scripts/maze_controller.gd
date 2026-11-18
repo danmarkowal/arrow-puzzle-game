@@ -494,7 +494,7 @@ func set_camera_position() -> void:
 		used_rect = used_rect.merge(layer.get_used_rect())
 
 	if camera and used_rect.has_area():
-		var rendered_size = Vector2i($ObstacleLayer.rendering_quadrant_size, $ObstacleLayer.rendering_quadrant_size)
+		var rendered_size = Vector2i($LevelLayer.rendering_quadrant_size, $LevelLayer.rendering_quadrant_size)
 		used_rect.size *= rendered_size
 		used_rect.position *= rendered_size
 		camera.set_camera(used_rect)
