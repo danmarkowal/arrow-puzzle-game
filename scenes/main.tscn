@@ -11,8 +11,9 @@
 
 [node name="Node2D" type="Node2D" unique_id=1963476635]
 
-[node name="MazeController" parent="." unique_id=1744428019 node_paths=PackedStringArray("toolbox", "stats", "camera", "ui_layer") instance=ExtResource("1_eb6dy")]
+[node name="MazeController" parent="." unique_id=1744428019 node_paths=PackedStringArray("gui", "toolbox", "stats", "camera", "ui_layer") instance=ExtResource("1_eb6dy")]
 level_list = ExtResource("2_o6xl0")
+gui = NodePath("../CanvasLayer/GUI")
 toolbox = NodePath("../CanvasLayer/GUI/Toolbox")
 stats = NodePath("../CanvasLayer/GUI/Stats")
 camera = NodePath("../Camera2D")

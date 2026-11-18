@@ -15,6 +15,7 @@ const CLEAR_SOUND = preload("res://audio/clear.wav")
 @export var current_level: int = 0
 @export var step_time: float = 0.2
 @export var level_list: LevelList
+@export var gui: Control
 @export var toolbox: Toolbox
 @export var stats: Stats
 @export var camera: InputCam
@@ -403,17 +404,16 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 
 
 func set_camera_position() -> void:
-	var layers = [$LevelLayer, $ObstacleLayer, $ArrowLayer]
+	var layers = [$LevelLayer, $ObstacleLayer, $ArrowLayer, $BuildAreaLayer]
 	var used_rect = Rect2i()
 	for layer in layers:
 		used_rect = used_rect.merge(layer.get_used_rect())
 	
 	if camera and used_rect.has_area():
-		# Centre of the first and last tile (end is exclusive, hence - ONE).
-		var top_left = $ObstacleLayer.map_to_local(used_rect.position)
-		var bottom_right = $ObstacleLayer.map_to_local(used_rect.end - Vector2i.ONE)
-		var center = (top_left + bottom_right) / 2
-		camera.set_camera($ObstacleLayer.to_global(center))
+		var rendered_size = Vector2i($ObstacleLayer.rendering_quadrant_size, $ObstacleLayer.rendering_quadrant_size)
+		used_rect.size *= rendered_size
+		used_rect.position *= rendered_size
+		camera.set_camera(used_rect)
 
 
 func copy_cell(cell: Vector2i, from: TileMapLayer, to: TileMapLayer) -> void:
@@ -425,11 +425,12 @@ func copy_cell(cell: Vector2i, from: TileMapLayer, to: TileMapLayer) -> void:
 
 func process_mouse_edit() -> void:
 	$GhostUserLayer.clear()
-	$GhostUserLayer.visible = !camera.is_dragging()
+	gui.mouse_behavior_recursive = \
+	 Control.MOUSE_BEHAVIOR_DISABLED if camera.is_dragging() else Control.MOUSE_BEHAVIOR_ENABLED
 	if not editable:
 		return
 	var cell = $UserLayer.local_to_map($UserLayer.get_local_mouse_position())
-	if action != ActionType.DELETE_BLOCK and can_place_block(cell):
+	if action != ActionType.DELETE_BLOCK and can_place_block(cell) and not camera.is_dragging():
 		render_ghost_block(cell)
 	match action:
 		ActionType.PLACE_BLOCK:
