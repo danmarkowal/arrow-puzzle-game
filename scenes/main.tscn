@@ -22,6 +22,7 @@ ui_layer = NodePath("../CanvasLayer")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=871845868]
 script = ExtResource("3_tipki")
 max_zoom = 1.5
+min_zoom = 0.25
 zoom_increment = 0.05
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=848897440]

@@ -2,7 +2,6 @@ extends Camera2D
 
 class_name InputCam
 
-@export var drag_speed := 100.0
 @export var margin_factor := 0.8
 @export var max_zoom := 1.0
 @export var min_zoom := 0.4
@@ -69,6 +68,8 @@ func set_camera(used_rect: Rect2) -> void:
 	var level_size = bounding_rect.size
 	var viewport_size = get_viewport_rect().size
 	level_zoom = min(viewport_size.x / level_size.x, viewport_size.y / level_size.y)
+	# Round down to the nearest increment
+	level_zoom -= fmod(level_zoom, zoom_increment)
 	reset_zoom()
 	
 func reset_zoom() -> void:
