@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://glti0m8xgc0v" path="res://textures/cells.png" id="1_s4mq8"]
 [ext_resource type="Script" uid="uid://co5pjp1s1d23k" path="res://resources/block_resource.gd" id="2_g8vck"]
 [ext_resource type="Script" uid="uid://cloq8scl3f845" path="res://scripts/level.gd" id="2_gew73"]
+[ext_resource type="PackedScene" uid="uid://bbxpxfyfyekmx" path="res://levels/leveldata/level_data.tscn" id="4_nunhx"]
 [ext_resource type="Resource" uid="uid://b4bi5okr0k5db" path="res://resources/blocks/splitter.tres" id="3_i5uwj"]
 [ext_resource type="Resource" uid="uid://668ilnuo8dvi" path="res://resources/blocks/placeable_wall.tres" id="4_uwapk"]
 
@@ -33,3 +34,5 @@ texture_filter = 1
 tile_map_data = PackedByteArray("AAAPAPz/AAACAAAAAAANAPz/AAACAAAAAAAOAPz/AAABAAAAAAAOAPv/AAABAAAAAAAOAPr/AAABAAAAAAAOAPn/AAABAAAAAAAOAPj/AAABAAAAAAANAPv/AAACAAAAAAANAPr/AAACAAAAAAANAPn/AAACAAAAAAANAPj/AAACAAAAAAANAPf/AAACAAAAAAAPAPf/AAACAAAAAAAPAPj/AAACAAAAAAAPAPn/AAACAAAAAAAPAPr/AAACAAAAAAAPAPv/AAACAAAAAAANAPb/AAACAAAAAAAOAPb/AAACAAAAAAAPAPb/AAACAAAAAAAOAPf/AAABAAIAAAANAAIAAAACAAAAAAAOAAIAAAACAAAAAAAPAAEAAAACAAAAAAAPAAAAAAACAAAAAAANAAAAAAACAAAAAAAPAP3/AAACAAAAAAAPAP7/AAACAAAAAAAPAP//AAACAAAAAAAPAAIAAAACAAAAAAANAP3/AAACAAAAAAANAP7/AAACAAAAAAANAP//AAACAAAAAAADAAEAAAAAAAAAAAA=")
 tile_set = ExtResource("1_hldmh")
 rendering_quadrant_size = 32
+
+[node name="LevelData" parent="LevelLayer" unique_id=1813487893 instance=ExtResource("4_nunhx")]

@@ -1,6 +1,5 @@
 extends Node
 
-
 # Block IDs
 const EMPTY = Vector2i(-1, -1)
 const ARROW = Vector2i(0, 0)

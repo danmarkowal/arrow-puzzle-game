@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://glti0m8xgc0v" path="res://textures/cells.png" id="1_0srwa"]
 [ext_resource type="TileSet" uid="uid://8caent6sdiiw" path="res://resources/maze_tile_set.tres" id="1_3hls8"]
 [ext_resource type="Script" uid="uid://cloq8scl3f845" path="res://scripts/level.gd" id="2_hbghi"]
+[ext_resource type="PackedScene" uid="uid://bbxpxfyfyekmx" path="res://levels/leveldata/level_data.tscn" id="4_lep63"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_v5uil"]
 texture = ExtResource("1_0srwa")
@@ -16,6 +17,7 @@ sources/1 = SubResource("TileSetAtlasSource_v5uil")
 
 [node name="Level" type="Node2D" unique_id=1143280282]
 script = ExtResource("2_hbghi")
+placeable_blocks = null
 notes = "Finally, we show all the cases where an arrow will 'backtrack', turning around and travelling in the opposite direction."
 
 [node name="BuildAreaLayer" type="TileMapLayer" parent="." unique_id=1789393449]
@@ -27,3 +29,7 @@ tile_map_data = PackedByteArray("AAABAAQAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAEAAAACAAA
 tile_set = ExtResource("1_3hls8")
 rendering_quadrant_size = 32
 script = ExtResource("2_hbghi")
+placeable_blocks = null
+notes = null
+
+[node name="LevelData" parent="LevelLayer" unique_id=1813487893 instance=ExtResource("4_lep63")]
