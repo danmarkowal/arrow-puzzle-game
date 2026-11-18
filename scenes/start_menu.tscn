@@ -78,6 +78,7 @@ grow_vertical = 2
 [node name="Play" type="Button" parent="Container" unique_id=857721088]
 layout_mode = 2
 size_flags_vertical = 3
+tooltip_text = "Play"
 theme_override_font_sizes/font_size = 52
 theme_override_styles/normal = SubResource("StyleBoxFlat_ntegx")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_ouf4f")
