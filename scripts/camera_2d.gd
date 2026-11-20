@@ -21,8 +21,7 @@ func _process(delta: float) -> void:
 	var zoom_increment_vec = Vector2(zoom_increment, zoom_increment)
 	
 	if Input.is_action_just_pressed("CameraDragKeyboard") or \
-	 Input.is_action_just_pressed("CameraDragMousepad") or \
-	 Input.is_action_just_pressed("CameraDragMouse"):
+		Input.is_action_just_pressed("CameraDragMouse"):
 		last_mouse_pos = get_local_mouse_position()
 	elif is_dragging():
 		var new_pos = get_local_mouse_position()
@@ -82,5 +81,5 @@ func clamp_zoom() -> void:
 	zoom = zoom.clamp(min_zoom_vec, max_zoom_vec)
 
 func is_dragging() -> bool:
-	return (Input.is_action_pressed("CameraDragKeyboard") and Input.is_action_pressed("CameraDragMousepad")) \
-		or Input.is_action_pressed("CameraDragMouse")
+	return (Input.is_action_pressed("CameraDragKeyboard") \
+		or Input.is_action_pressed("CameraDragMouse"))
