@@ -1,4 +1,4 @@
-extends PanelContainer
+extends Control
 class_name Toolbox
 
 
@@ -68,18 +68,20 @@ func get_buttons() -> Array[Node]:
 	return $Buttons.get_children()
 
 
-func deselect():
-	selected_block = null
-	
-
-func _on_block_selected(block: BlockResource) -> void:
+func select(block: BlockResource) -> void:
 	selected_block = block
 	block_rotation = Constants.NORTH
 
 
+func deselect() -> void:
+	selected_block = null
+	
 func rotate_block(direction: int) -> void:
 	if selected_block == null or not selected_block.rotatable:
 		return
 	block_rotation += direction
 	if block_rotation < 0: block_rotation = 3
 	block_rotation %= 4
+
+func _on_block_selected(block: BlockResource) -> void:
+	select(block)

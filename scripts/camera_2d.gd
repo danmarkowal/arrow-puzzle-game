@@ -20,7 +20,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("CameraDragKeyboard") or \
-	 Input.is_action_just_pressed("CameraDragMouse"):
+		Input.is_action_just_pressed("CameraDragMouse"):
 		last_mouse_pos = get_local_mouse_position()
 	elif is_dragging():
 		var new_pos = get_local_mouse_position()
@@ -86,5 +86,5 @@ func change_zoom(delta: float) -> void:
 	zoom = new_zoom
 
 func is_dragging() -> bool:
-	return Input.is_action_pressed("CameraDragKeyboard") \
-		or Input.is_action_pressed("CameraDragMouse")
+	return (Input.is_action_pressed("CameraDragKeyboard") \
+		or Input.is_action_pressed("CameraDragMouse"))
