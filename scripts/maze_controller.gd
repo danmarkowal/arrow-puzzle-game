@@ -64,13 +64,13 @@ func add_user_tiles() -> void:
 func play() -> void:
 	if playing or goal_reached or game_over:
 		return
+	deselect_blocks()
 	# Only add the user tiles once, when the user first presses play without a reset
 	if editable:
 		add_user_tiles()
 		editable = false
 		$BuildAreaLayer.visible = false
 		$UserLayer.visible = false
-	$SelectUserLayer.clear_highlighted_cells()
 	playing = true
 	start_time = Time.get_ticks_usec()
 	$UiSfxPlayer.stream = PLAY_SOUND
@@ -102,7 +102,7 @@ func clear() -> void:
 	# Can't clear or nothing to clear 
 	if not editable or $UserLayer.get_used_cells().size() == 0:
 		return
-	$SelectUserLayer.clear_highlighted_cells()
+	deselect_blocks()
 	$UserLayer.clear()
 	toolbox.reset()
 	$UiSfxPlayer.stream = CLEAR_SOUND
@@ -439,7 +439,7 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 	$ArrowLayer.clear()
 	$LevelLayer.clear()
 	$ObstacleLayer.clear()
-	$SelectUserLayer.clear_highlighted_cells()
+	deselect_blocks()
 
 	var level = scene.instantiate()
 	level.init()
@@ -589,12 +589,13 @@ func process_selected_blocks() -> void:
 				
 			$SelectUserLayer.move_selected_cells(mouse_pos)
 		elif Input.is_action_just_released("PlaceBlock", true):
-			# Delete blocks in impossible locations
-			for cell in $UserLayer.get_used_cells():
-				if not can_place_block(cell):
-					delete_block(cell)
-			$SelectUserLayer.stop_moving_cells()
-			
+			deselect_blocks()
+
+func deselect_blocks() -> void:
+	for cell in $UserLayer.get_used_cells():
+		if not can_place_block(cell):
+			delete_block(cell)
+	$SelectUserLayer.stop_moving_cells()
 
 func render_ghost_block(cell: Vector2i) -> void:
 	var selected = toolbox.selected_block
