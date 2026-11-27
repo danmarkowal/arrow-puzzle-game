@@ -21,7 +21,7 @@ texture_region_size = Vector2i(32, 32)
 2:0/next_alternative_id = 3
 2:0/0 = 0
 2:0/0/modulate = Color(0.75, 0.75, 0.75, 1)
-0:1/next_alternative_id = 4
+0:1/next_alternative_id = 5
 0:1/0 = 0
 0:1/1 = 1
 0:1/1/modulate = Color(0.21176471, 0.7019608, 1, 1)
@@ -73,8 +73,6 @@ texture_region_size = Vector2i(32, 32)
 3:4/3/flip_v = true
 3:4/3/transpose = true
 3:4/3/modulate = Color(1, 0.8745098, 0.5019608, 1)
-7:1/0 = 0
-7:0/0 = 0
 
 [resource]
 tile_size = Vector2i(32, 32)

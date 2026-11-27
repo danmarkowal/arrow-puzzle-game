@@ -1,5 +1,4 @@
 extends Camera2D
-
 class_name InputCam
 
 @export var margin_factor := 0.8

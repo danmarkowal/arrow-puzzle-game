@@ -11,13 +11,13 @@ const PAUSE_SOUND = preload("res://audio/pause.wav")
 const RESTART_SOUND = preload("res://audio/restart.wav")
 const CLEAR_SOUND = preload("res://audio/clear.wav")
 
+const PAUSE_MENU = preload("res://scenes/pause_menu.tscn")
+
 
 @export var current_level: int = 0
 @export var step_time: float = 0.2
 @export var level_list: LevelList
-@export var gui: Control
-@export var toolbox: Toolbox
-@export var stats: Stats
+@export var gui: GUI
 @export var camera: InputCam
 @export var ui_layer: CanvasLayer
 
@@ -32,7 +32,6 @@ var level_cell_data: Dictionary[Vector2i, BlockData]
 var start_time: int = 0
 var pause_menu: Control
 var block_select_rect: Rect2
-const PAUSE_MENU = preload("res://scenes/pause_menu.tscn")
 
 
 enum ActionType {
@@ -83,7 +82,6 @@ func pause() -> void:
 	$UiSfxPlayer.play()
 
 
-
 func restart(first_load: bool) -> void:
 	if level_list.levels.is_empty():
 		push_warning("No level scenes assigned.")
@@ -103,7 +101,7 @@ func clear() -> void:
 		return
 	deselect_blocks()
 	$UserLayer.clear()
-	toolbox.reset()
+	gui.toolbox.reset()
 	$UiSfxPlayer.stream = CLEAR_SOUND
 	$UiSfxPlayer.play()
 
@@ -179,7 +177,7 @@ var arrows: Array[Arrow] = []
 
 # Called when the node enters the scene tree for the first time
 func _ready() -> void:
-	restart(true)
+	call_deferred("restart", true)
 
 
 # Desired facing is an absolute direction
@@ -318,7 +316,7 @@ func split_arrow(arrow: Arrow, spawn: Dictionary) -> void:
 
 # Teleporter
 # Performs similar behaviour to a splitter, except the exit is on the other side of the portal
-func teleport_arrow(arrow: Arrow, spawn:Dictionary) -> void:
+func teleport_arrow(arrow: Arrow, spawn: Dictionary) -> void:
 	var portal_coords := arrow.position
 	# Fetch tag of this portal
 	var tag = level_cell_data.get(portal_coords).interaction_tag
@@ -343,7 +341,7 @@ func teleport_arrow(arrow: Arrow, spawn:Dictionary) -> void:
 	# if free, spawn an arrow there
 	var output_block = other_portal_coords + Arrow.cardinal_to_offset(arrow.facing)
 	var output_facing := arrow.facing
-	var can_teleport:bool = true
+	var can_teleport: bool = true
 
 	if not (is_free(output_block, arrow.facing)):
 		# Output block is not free
@@ -468,7 +466,7 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 		$BuildAreaLayer.clear()
 		for cell in build_area.get_used_cells():
 			$BuildAreaLayer.set_cell(cell, 0, Constants.BUILD_AREA)
-		toolbox.init(level.block_counts)
+		gui.toolbox.init(level.block_counts)
 		# This has to be set after cells are copied so the center is correctly
 		# calculated
 		set_camera_position()
@@ -486,9 +484,9 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 
 
 	redraw_arrows()
-	if stats:
-		stats.set_steps(steps)
-		stats.set_arrows(len(arrows))
+	if gui.stats:
+		gui.stats.set_steps(steps)
+		gui.stats.set_arrows(len(arrows))
 
 
 func set_camera_position() -> void:
@@ -535,9 +533,9 @@ func process_mouse_edit() -> void:
 func process_selected_blocks() -> void:
 	if Input.is_action_just_pressed("SelectBlocks"):
 		# Deselect currently held block when starting to select blocks
-		if toolbox.selected_block != null:
-			toolbox.buttons[toolbox.selected_block].button_pressed = false
-			toolbox.deselect()
+		if gui.toolbox.selected_block != null:
+			gui.toolbox.buttons[gui.toolbox.selected_block].button_pressed = false
+			gui.toolbox.deselect()
 		$SelectUserLayer.clear_highlighted_cells()
 		block_select_rect.position = get_global_mouse_position()
 	elif Input.is_action_pressed("SelectBlocks"):
@@ -556,7 +554,7 @@ func process_selected_blocks() -> void:
 				$SelectUserLayer.clear_highlighted_cells()
 		elif Input.is_action_pressed("PlaceBlock", true) and $SelectUserLayer.dragging_cells:
 			var mouse_pos = get_global_mouse_position()
-			var new_cell_data : Array[int]
+			var new_cell_data: Array[int]
 			
 			# Save block data to array then erase blocks
 			for pos in $SelectUserLayer.moving_positions:
@@ -565,27 +563,27 @@ func process_selected_blocks() -> void:
 				var block_rotation = $UserLayer.get_cell_alternative_tile(user_cell)
 				var new_block_cell = $UserLayer.local_to_map(pos + mouse_pos - $SelectUserLayer.moving_positions_last)
 				new_cell_data.append_array(\
-					[\
-						new_block_cell.x, new_block_cell.y,\
-						atlas_coords.x, atlas_coords.y,\
+					[ \
+						new_block_cell.x, new_block_cell.y, \
+						atlas_coords.x, atlas_coords.y, \
 						block_rotation
-					]\
+					] \
 				)
 				
 				$UserLayer.erase_cell(user_cell)
 			
 			# Now reset blocks in new positions from data
 			for i in range(0, new_cell_data.size(), 5):
-				var new_block_cell = Vector2i(new_cell_data[i], new_cell_data[i+1])
+				var new_block_cell = Vector2i(new_cell_data[i], new_cell_data[i + 1])
 				
 				if new_block_cell in $UserLayer.get_used_cells():
 					delete_block(new_block_cell)
 				
 				$UserLayer.set_cell(\
-					new_block_cell,\
-					0,\
-					Vector2i(new_cell_data[i+2], new_cell_data[i+3]),\
-					new_cell_data[i+4]\
+					new_block_cell, \
+					0, \
+					Vector2i(new_cell_data[i + 2], new_cell_data[i + 3]), \
+					new_cell_data[i + 4] \
 				)
 				
 			$SelectUserLayer.move_selected_cells(mouse_pos)
@@ -599,10 +597,10 @@ func deselect_blocks() -> void:
 	$SelectUserLayer.stop_moving_cells()
 
 func render_ghost_block(cell: Vector2i) -> void:
-	var selected = toolbox.selected_block
-	if selected == null or not toolbox.has_remaining(selected):
+	var selected = gui.toolbox.selected_block
+	if selected == null or not gui.toolbox.has_remaining(selected):
 		return
-	$GhostUserLayer.set_cell(cell, 0, selected.atlas_coords, toolbox.block_rotation)
+	$GhostUserLayer.set_cell(cell, 0, selected.atlas_coords, gui.toolbox.block_rotation)
 
 
 func _on_step_timer_timeout() -> void:
@@ -643,9 +641,9 @@ func _on_step_timer_timeout() -> void:
 
 	steps += 1
 	redraw_arrows()
-	if stats:
-		stats.set_steps(steps)
-		stats.set_arrows(len(arrows))
+	if gui.stats:
+		gui.stats.set_steps(steps)
+		gui.stats.set_arrows(len(arrows))
 
 	# Win/lose is decided once per tick, so order of arrows doesn't matter.
 	if goal_reached:
@@ -677,7 +675,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and editable \
 		and event.pressed and not event.echo \
 		and event.keycode >= KEY_0 and event.keycode <= KEY_9:
-		var buttons = toolbox.get_buttons()
+		var buttons = gui.toolbox.get_buttons()
 		var index = event.keycode - KEY_1
 		if event.keycode == KEY_0:
 			index = 9
@@ -687,7 +685,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			if buttons[index].button_pressed:
 				buttons[index].pressed.emit()
 			else:
-				toolbox.deselect()
+				gui.toolbox.deselect()
 			$SelectUserLayer.clear_highlighted_cells()
 	
 	if event.is_action_pressed("PauseToggle"):
@@ -719,12 +717,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		or camera.is_dragging():
 		action = ActionType.NONE
 	elif event.is_action_pressed("RotateBlockCW"):
-		toolbox.rotate_block(1)
+		gui.toolbox.rotate_block(1)
 	elif event.is_action_pressed("RotateBlockCCW"):
-		toolbox.rotate_block(-1)
-		
-		
-		
+		gui.toolbox.rotate_block(-1)
+
 
 func can_place_block(cell: Vector2i):
 	# Player can only place blocks in the buildable area
@@ -739,8 +735,8 @@ func can_place_block(cell: Vector2i):
 
 
 func place_block(cell: Vector2i) -> bool:
-	var selected = toolbox.selected_block
-	if selected == null or not toolbox.has_remaining(selected):
+	var selected = gui.toolbox.selected_block
+	if selected == null or not gui.toolbox.has_remaining(selected):
 		return false
 
 	var existing_atlas_coords = $UserLayer.get_cell_atlas_coords(cell)
@@ -749,13 +745,13 @@ func place_block(cell: Vector2i) -> bool:
 		var existing_block = BLOCK_REGISTRY.get_block(existing_atlas_coords)
 		var existing_rotation = $UserLayer.get_cell_alternative_tile(cell)
 		# Do not replace with the same block as useless
-		if existing_block == selected and existing_rotation == toolbox.block_rotation:
+		if existing_block == selected and existing_rotation == gui.toolbox.block_rotation:
 			return false
 		# Put back the existing block when replacing it
-		toolbox.change_count(existing_block, 1)
+		gui.toolbox.change_count(existing_block, 1)
 
-	$UserLayer.set_cell(cell, 0, selected.atlas_coords, toolbox.block_rotation)
-	toolbox.change_count(selected, -1)
+	$UserLayer.set_cell(cell, 0, selected.atlas_coords, gui.toolbox.block_rotation)
+	gui.toolbox.change_count(selected, -1)
 	return true
 
 
@@ -765,7 +761,7 @@ func delete_block(cell: Vector2i) -> bool:
 		return false
 	var placeable_block = BLOCK_REGISTRY.get_block(atlas_coords)
 	$UserLayer.erase_cell(cell)
-	toolbox.change_count(placeable_block, 1)
+	gui.toolbox.change_count(placeable_block, 1)
 	return true
 	
 func draw_select_blocks() -> void:
@@ -788,4 +784,3 @@ func _resume() -> void:
 	pause_menu.queue_free()
 	pause_menu = null
 	get_tree().paused = false
-	
