@@ -31,6 +31,7 @@ var action: ActionType = ActionType.NONE
 var level_cell_data: Dictionary[Vector2i, BlockData]
 var start_time: int = 0
 var pause_menu: Control
+var block_select_start: Vector2
 var block_select_rect: Rect2
 
 
@@ -537,9 +538,9 @@ func process_selected_blocks() -> void:
 			gui.toolbox.buttons[gui.toolbox.selected_block].button_pressed = false
 			gui.toolbox.deselect()
 		$SelectUserLayer.clear_highlighted_cells()
-		block_select_rect.position = get_global_mouse_position()
+		block_select_start = get_global_mouse_position()
 	elif Input.is_action_pressed("SelectBlocks"):
-		block_select_rect = Rect2(block_select_rect.position, get_global_mouse_position() - block_select_rect.position).abs()
+		block_select_rect = Rect2(block_select_start, get_global_mouse_position() - block_select_start).abs()
 		draw_select_blocks()
 	elif Input.is_action_just_released("SelectBlocks"):
 		$SelectUserLayer.clear_select_rect()
