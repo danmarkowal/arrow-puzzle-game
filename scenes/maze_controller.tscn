@@ -18,6 +18,8 @@ sources/0 = SubResource("TileSetAtlasSource_q28i6")
 
 [node name="MazeController" type="Node2D" unique_id=1744428019]
 script = ExtResource("1_q8g6s")
+current_level = null
+step_time = null
 
 [node name="BuildAreaLayer" type="TileMapLayer" parent="." unique_id=1654705046]
 tile_set = SubResource("TileSet_njmk0")

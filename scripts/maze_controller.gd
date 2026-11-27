@@ -31,7 +31,6 @@ var action: ActionType = ActionType.NONE
 var level_cell_data: Dictionary[Vector2i, BlockData]
 var start_time: int = 0
 var pause_menu: Control
-var block_select_start: Vector2
 var block_select_rect: Rect2
 const PAUSE_MENU = preload("res://scenes/pause_menu.tscn")
 
@@ -540,10 +539,12 @@ func process_selected_blocks() -> void:
 			toolbox.buttons[toolbox.selected_block].button_pressed = false
 			toolbox.deselect()
 		$SelectUserLayer.clear_highlighted_cells()
-		block_select_start = get_global_mouse_position()
+		block_select_rect.position = get_global_mouse_position()
 	elif Input.is_action_pressed("SelectBlocks"):
-		block_select_rect = Rect2(block_select_start, get_global_mouse_position() - block_select_start).abs()
+		block_select_rect = Rect2(block_select_rect.position, get_global_mouse_position() - block_select_rect.position).abs()
 		draw_select_blocks()
+	elif Input.is_action_just_released("SelectBlocks"):
+		$SelectUserLayer.clear_select_rect()
 	elif $SelectUserLayer.is_cells_selected(): 
 		if Input.is_action_just_pressed("DeleteBlock", true):
 			$SelectUserLayer.clear_highlighted_cells()
@@ -774,7 +775,7 @@ func draw_select_blocks() -> void:
 		var cell_rect = Rect2(Vector2(cell) * cell_size, cell_size)
 		if block_select_rect.intersects(cell_rect):
 			highlighted_cells.push_back(cell_rect)
-	$SelectUserLayer.set_highlighted_cells(highlighted_cells)
+	$SelectUserLayer.set_render_targets(block_select_rect, highlighted_cells)
 
 func _open_pause() -> void:
 	pause_menu = PAUSE_MENU.instantiate()
