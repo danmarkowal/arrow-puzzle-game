@@ -11,6 +11,8 @@ const PAUSE_SOUND = preload("res://audio/pause.wav")
 const RESTART_SOUND = preload("res://audio/restart.wav")
 const CLEAR_SOUND = preload("res://audio/clear.wav")
 
+const PAUSE_MENU = preload("res://scenes/pause_menu.tscn")
+
 
 @export var current_level: int = 0
 @export var step_time: float = 0.2
@@ -31,7 +33,6 @@ var start_time: int = 0
 var pause_menu: Control
 var block_select_start: Vector2
 var block_select_rect: Rect2
-const PAUSE_MENU = preload("res://scenes/pause_menu.tscn")
 
 
 enum ActionType {
@@ -533,9 +534,9 @@ func process_mouse_edit() -> void:
 func process_selected_blocks() -> void:
 	if Input.is_action_just_pressed("SelectBlocks"):
 		# Deselect currently held block when starting to select blocks
-		if toolbox.selected_block != null:
-			toolbox.buttons[toolbox.selected_block].button_pressed = false
-			toolbox.deselect()
+		if gui.toolbox.selected_block != null:
+			gui.toolbox.buttons[gui.toolbox.selected_block].button_pressed = false
+			gui.toolbox.deselect()
 		$SelectUserLayer.clear_highlighted_cells()
 		block_select_start = get_global_mouse_position()
 	elif Input.is_action_pressed("SelectBlocks"):
@@ -717,7 +718,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("RotateBlockCW"):
 		gui.toolbox.rotate_block(1)
 	elif event.is_action_pressed("RotateBlockCCW"):
-		toolbox.rotate_block(-1)
+		gui.toolbox.rotate_block(-1)
 
 
 func can_place_block(cell: Vector2i):
