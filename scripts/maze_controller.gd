@@ -29,6 +29,8 @@ var action: ActionType = ActionType.NONE
 var level_cell_data: Dictionary[Vector2i, BlockData]
 var start_time: int = 0
 var pause_menu: Control
+var block_select_start: Vector2
+var block_select_rect: Rect2
 const PAUSE_MENU = preload("res://scenes/pause_menu.tscn")
 
 
@@ -60,6 +62,7 @@ func add_user_tiles() -> void:
 func play() -> void:
 	if playing or goal_reached or game_over:
 		return
+	deselect_blocks()
 	# Only add the user tiles once, when the user first presses play without a reset
 	if editable:
 		add_user_tiles()
@@ -79,7 +82,6 @@ func pause() -> void:
 	$UiSfxPlayer.play()
 
 
-
 func restart(first_load: bool) -> void:
 	if level_list.levels.is_empty():
 		push_warning("No level scenes assigned.")
@@ -97,6 +99,7 @@ func clear() -> void:
 	# Can't clear or nothing to clear 
 	if not editable or $UserLayer.get_used_cells().size() == 0:
 		return
+	deselect_blocks()
 	$UserLayer.clear()
 	gui.toolbox.reset()
 	$UiSfxPlayer.stream = CLEAR_SOUND
@@ -313,7 +316,7 @@ func split_arrow(arrow: Arrow, spawn: Dictionary) -> void:
 
 # Teleporter
 # Performs similar behaviour to a splitter, except the exit is on the other side of the portal
-func teleport_arrow(arrow: Arrow, spawn:Dictionary) -> void:
+func teleport_arrow(arrow: Arrow, spawn: Dictionary) -> void:
 	var portal_coords := arrow.position
 	# Fetch tag of this portal
 	var tag = level_cell_data.get(portal_coords).interaction_tag
@@ -338,7 +341,7 @@ func teleport_arrow(arrow: Arrow, spawn:Dictionary) -> void:
 	# if free, spawn an arrow there
 	var output_block = other_portal_coords + Arrow.cardinal_to_offset(arrow.facing)
 	var output_facing := arrow.facing
-	var can_teleport:bool = true
+	var can_teleport: bool = true
 
 	if not (is_free(output_block, arrow.facing)):
 		# Output block is not free
@@ -433,6 +436,7 @@ func load_level_from_scene(scene: PackedScene, first_load: bool) -> void:
 	$ArrowLayer.clear()
 	$LevelLayer.clear()
 	$ObstacleLayer.clear()
+	deselect_blocks()
 
 	var level = scene.instantiate()
 	level.init()
@@ -526,6 +530,69 @@ func process_mouse_edit() -> void:
 				$EditorSfxPlayer.pitch_scale = 1.0 + randf_range(0.0, 0.1)
 				$EditorSfxPlayer.play()
 
+func process_selected_blocks() -> void:
+	if Input.is_action_just_pressed("SelectBlocks"):
+		# Deselect currently held block when starting to select blocks
+		if toolbox.selected_block != null:
+			toolbox.buttons[toolbox.selected_block].button_pressed = false
+			toolbox.deselect()
+		$SelectUserLayer.clear_highlighted_cells()
+		block_select_start = get_global_mouse_position()
+	elif Input.is_action_pressed("SelectBlocks"):
+		block_select_rect = Rect2(block_select_start, get_global_mouse_position() - block_select_start).abs()
+		draw_select_blocks()
+	elif $SelectUserLayer.is_cells_selected():
+		if Input.is_action_just_pressed("DeleteBlock", true):
+			$SelectUserLayer.clear_highlighted_cells()
+		elif Input.is_action_just_pressed("PlaceBlock", true):
+			var mouse_pos = get_global_mouse_position()
+			if $SelectUserLayer.in_selected_cells(mouse_pos):
+				$SelectUserLayer.start_moving_cells(mouse_pos)
+			else:
+				$SelectUserLayer.clear_highlighted_cells()
+		elif Input.is_action_pressed("PlaceBlock", true) and $SelectUserLayer.dragging_cells:
+			var mouse_pos = get_global_mouse_position()
+			var new_cell_data: Array[int]
+			
+			# Save block data to array then erase blocks
+			for pos in $SelectUserLayer.moving_positions:
+				var user_cell = $UserLayer.local_to_map(pos)
+				var atlas_coords = $UserLayer.get_cell_atlas_coords(user_cell)
+				var block_rotation = $UserLayer.get_cell_alternative_tile(user_cell)
+				var new_block_cell = $UserLayer.local_to_map(pos + mouse_pos - $SelectUserLayer.moving_positions_last)
+				new_cell_data.append_array(\
+					[ \
+						new_block_cell.x, new_block_cell.y, \
+						atlas_coords.x, atlas_coords.y, \
+						block_rotation
+					] \
+				)
+				
+				$UserLayer.erase_cell(user_cell)
+			
+			# Now reset blocks in new positions from data
+			for i in range(0, new_cell_data.size(), 5):
+				var new_block_cell = Vector2i(new_cell_data[i], new_cell_data[i + 1])
+				
+				if new_block_cell in $UserLayer.get_used_cells():
+					delete_block(new_block_cell)
+				
+				$UserLayer.set_cell(\
+					new_block_cell, \
+					0, \
+					Vector2i(new_cell_data[i + 2], new_cell_data[i + 3]), \
+					new_cell_data[i + 4] \
+				)
+				
+			$SelectUserLayer.move_selected_cells(mouse_pos)
+		elif Input.is_action_just_released("PlaceBlock", true):
+			deselect_blocks()
+
+func deselect_blocks() -> void:
+	for cell in $UserLayer.get_used_cells():
+		if not can_place_block(cell):
+			delete_block(cell)
+	$SelectUserLayer.stop_moving_cells()
 
 func render_ghost_block(cell: Vector2i) -> void:
 	var selected = gui.toolbox.selected_block
@@ -597,6 +664,9 @@ func _process(delta: float) -> void:
 		_on_step_timer_timeout()
 		start_time = Time.get_ticks_usec()
 	process_mouse_edit()
+	
+	if not camera.is_dragging() and editable:
+		process_selected_blocks()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -614,7 +684,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				buttons[index].pressed.emit()
 			else:
 				gui.toolbox.deselect()
-
+			$SelectUserLayer.clear_highlighted_cells()
+	
 	if event.is_action_pressed("PauseToggle"):
 		if playing:
 			pause()
@@ -634,10 +705,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("LevelSelectMenuToggle"):
 		var level_menu = get_parent().get_node("CanvasLayer/GUI/LevelMenu")
 		level_menu.toggle_visibility()
-	elif event.is_action_pressed("PlaceBlock") and \
+	elif event.is_action_pressed("PlaceBlock", false, true) and \
 	 not camera.is_dragging() and editable:
 		action = ActionType.PLACE_BLOCK
-	elif event.is_action_pressed("DeleteBlock") and editable:
+	elif event.is_action_pressed("DeleteBlock", false, true) and editable:
 		action = ActionType.DELETE_BLOCK
 	elif event.is_action_released("PlaceBlock") \
 		or event.is_action_released("DeleteBlock") \
@@ -646,7 +717,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("RotateBlockCW"):
 		gui.toolbox.rotate_block(1)
 	elif event.is_action_pressed("RotateBlockCCW"):
-		gui.toolbox.rotate_block(-1)
+		toolbox.rotate_block(-1)
 
 
 func can_place_block(cell: Vector2i):
@@ -690,6 +761,15 @@ func delete_block(cell: Vector2i) -> bool:
 	$UserLayer.erase_cell(cell)
 	gui.toolbox.change_count(placeable_block, 1)
 	return true
+	
+func draw_select_blocks() -> void:
+	var highlighted_cells: Array[Rect2]
+	var cell_size = Vector2($UserLayer.tile_set.tile_size)
+	for cell in $UserLayer.get_used_cells():
+		var cell_rect = Rect2(Vector2(cell) * cell_size, cell_size)
+		if block_select_rect.intersects(cell_rect):
+			highlighted_cells.push_back(cell_rect)
+	$SelectUserLayer.set_highlighted_cells(highlighted_cells)
 
 func _open_pause() -> void:
 	pause_menu = PAUSE_MENU.instantiate()
@@ -702,4 +782,3 @@ func _resume() -> void:
 	pause_menu.queue_free()
 	pause_menu = null
 	get_tree().paused = false
-	

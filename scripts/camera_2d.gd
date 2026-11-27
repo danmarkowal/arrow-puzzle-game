@@ -8,6 +8,7 @@ class_name InputCam
 
 var start_camera_pos: Vector2
 var last_mouse_pos: Vector2
+var zoom_start : Vector2
 var min_margin: Vector2
 var max_margin: Vector2
 var scroll_length := 0.0
@@ -17,8 +18,6 @@ func _ready() -> void:
 	reset_zoom()
 
 func _process(delta: float) -> void:
-	var zoom_increment_vec = Vector2(zoom_increment, zoom_increment)
-	
 	if Input.is_action_just_pressed("CameraDragKeyboard") or \
 		Input.is_action_just_pressed("CameraDragMouse"):
 		last_mouse_pos = get_local_mouse_position()
@@ -32,18 +31,15 @@ func _process(delta: float) -> void:
 		last_mouse_pos = get_local_mouse_position()
 		reset_zoom()
 	elif Input.is_action_just_pressed("CameraZoomInKeyboard"):
-		zoom += zoom_increment_vec
+		change_zoom(zoom_increment)
 	elif Input.is_action_just_pressed("CameraZoomOutKeyboard"):
-		zoom -= zoom_increment_vec
-	clamp_zoom()
+		change_zoom(-zoom_increment)
 	
 func _input(event: InputEvent) -> void:
-	var zoom_increment_vec = Vector2(zoom_increment, zoom_increment)
 	if event.is_action("CameraZoomInScroll"):
-		zoom += zoom_increment_vec
+		change_zoom(zoom_increment)
 	elif event.is_action("CameraZoomOutScroll"):
-		zoom -= zoom_increment_vec
-	clamp_zoom()
+		change_zoom(-zoom_increment)
 
 func set_camera(used_rect: Rect2) -> void:
 	last_mouse_pos = get_local_mouse_position()
@@ -71,13 +67,22 @@ func set_camera(used_rect: Rect2) -> void:
 	reset_zoom()
 	
 func reset_zoom() -> void:
-	zoom = Vector2(level_zoom, level_zoom)
-	clamp_zoom()
+	zoom = clamp_zoom(Vector2(level_zoom, level_zoom))
 
-func clamp_zoom() -> void:
+func clamp_zoom(z: Vector2) -> Vector2:
 	var max_zoom_vec = Vector2(max_zoom, max_zoom)
 	var min_zoom_vec = Vector2(min_zoom, min_zoom)
-	zoom = zoom.clamp(min_zoom_vec, max_zoom_vec)
+	return z.clamp(min_zoom_vec, max_zoom_vec)
+
+func change_zoom(delta: float) -> void:
+	var mouse_pos = get_global_mouse_position()
+	var old_zoom = zoom
+	var new_zoom = clamp_zoom(zoom + Vector2(delta, delta))
+	
+	if is_equal_approx(old_zoom.x, new_zoom.x): return
+
+	position = mouse_pos + (position - mouse_pos) * (old_zoom.x / new_zoom.x)
+	zoom = new_zoom
 
 func is_dragging() -> bool:
 	return (Input.is_action_pressed("CameraDragKeyboard") \
